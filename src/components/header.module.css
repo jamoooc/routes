@@ -1,0 +1,73 @@
+.header {
+  position: fixed;
+  width: 100vw;
+  top: 0;
+  left: 0;
+  display: flex;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.navContainer {
+  display: flex;
+  width: 100%;
+  display: flex;
+  flex-direction: row-reverse;
+  box-sizing: border-box;
+  padding-right: 10px;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.about {
+  border: none;
+  font-size: 1rem;
+  font-family: inherit;
+  background-color: #242424;
+  cursor: pointer;
+}
+
+.t {
+  padding: 0;
+  margin: 0;
+  color: rgba(235, 235, 235, 0.6);
+}
+
+.t:hover {
+  transition: color 0.3s ease-out;
+  color: rgba(235, 235, 235, 1);
+  filter: drop-shadow(0 0 4px rgba(202, 202, 202, 0.6));
+}
+
+.anchorContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.anchor {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.svg {
+  width: 30px;
+  height: 30px;
+  fill: rgba(235, 235, 235, 0.6);
+  transition: fill 0.3s ease-out;
+  will-change: filter;
+}
+
+.svg:hover {
+  cursor: pointer;
+  transition: fill 0.3s ease-out;
+  fill: rgba(235, 235, 235, 1);
+  filter: drop-shadow(0 0 4px rgba(202, 202, 202, 0.6));
+}
