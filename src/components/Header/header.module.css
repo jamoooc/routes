@@ -23,7 +23,7 @@
   justify-content: flex-end;
 }
 
-.about {
+.aboutButton {
   border: none;
   font-size: 1rem;
   font-family: inherit;
@@ -31,13 +31,13 @@
   cursor: pointer;
 }
 
-.t {
+.aboutText {
   padding: 0;
   margin: 0;
   color: rgba(235, 235, 235, 0.6);
 }
 
-.t:hover {
+.aboutText:hover {
   transition: color 0.3s ease-out;
   color: rgba(235, 235, 235, 1);
   filter: drop-shadow(0 0 4px rgba(202, 202, 202, 0.6));
