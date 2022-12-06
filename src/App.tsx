@@ -9,7 +9,7 @@ function App() {
 
   return (
     <div className="App">
-      <Header open={sideMenuOpen} setOpen={setSideMenuOpen} />
+      <Header setOpen={setSideMenuOpen} />
       <SideMenu open={sideMenuOpen} setOpen={setSideMenuOpen} />
       <Routes />
     </div>

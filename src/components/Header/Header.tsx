@@ -1,10 +1,8 @@
 import classes from "./header.module.css";
 
 export default function Header({
-  open,
   setOpen,
 }: {
-  open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   return (
