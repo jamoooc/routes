@@ -1,6 +1,12 @@
 import classes from "./header.module.css";
 
-export default function Header() {
+export default function Header({
+  open,
+  setOpen,
+}: {
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   return (
     <header className={classes.header}>
       <div className={classes.anchorContainer}>
@@ -18,7 +24,7 @@ export default function Header() {
       </div>
       <div className={classes.navContainer}>
         <nav className={classes.nav}>
-          <button className={classes.aboutButton}>
+          <button className={classes.aboutButton} onClick={() => setOpen(true)}>
             <p className={classes.aboutText}>About</p>
           </button>
         </nav>
