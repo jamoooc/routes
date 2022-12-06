@@ -42,6 +42,7 @@ export default function SideMenu({
                 className={classes.closeButton}
                 ref={closeSideMenuRef}
                 onClick={() => setOpen(false)}
+                title="Close"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

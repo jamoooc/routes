@@ -22,7 +22,11 @@ export default function Header({
       </div>
       <div className={classes.navContainer}>
         <nav className={classes.nav}>
-          <button className={classes.aboutButton} onClick={() => setOpen(true)}>
+          <button
+            className={classes.aboutButton}
+            onClick={() => setOpen(true)}
+            title="About"
+          >
             <p className={classes.aboutText}>About</p>
           </button>
         </nav>
