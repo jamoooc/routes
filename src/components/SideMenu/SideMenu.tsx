@@ -1,3 +1,4 @@
+import { useRef, useEffect } from "react";
 import classes from "./sidemenu.module.css";
 
 export default function SideMenu({
@@ -7,6 +8,24 @@ export default function SideMenu({
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  const closeSideMenuRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (closeSideMenuRef.current) {
+      closeSideMenuRef.current.focus();
+    }
+  }, [open]);
+
+  useEffect(() => {
+    const close = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("keydown", close);
+    return () => document.removeEventListener("keydown", close);
+  }, []);
+
   return !open ? (
     <></>
   ) : (
@@ -21,6 +40,7 @@ export default function SideMenu({
             <div className={classes.iconContainer}>
               <button
                 className={classes.closeButton}
+                ref={closeSideMenuRef}
                 onClick={() => setOpen(false)}
               >
                 <svg
