@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useReducer } from "react";
 import Header from "./components/Header/Header";
 import Routes from "./components/Routes/Routes";
 import SideMenu from "./components/SideMenu/SideMenu";
+import routeListReducer from "./reducers/routeListReducer";
 import type { RouteNameType } from "./types";
 import "./App.css";
 
@@ -16,7 +17,7 @@ const data: RouteNameType[] = [
   },
 ];
 
-const routes = [
+const routesData = [
   {
     id: 123,
     origin: data[0],
@@ -56,6 +57,7 @@ const routes = [
 
 function App() {
   const [sideMenuOpen, setSideMenuOpen] = useState<boolean>(false);
+  const [routes, dispatch] = useReducer(routeListReducer, routesData);
 
   return (
     <div className="App">

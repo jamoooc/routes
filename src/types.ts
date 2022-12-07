@@ -12,3 +12,8 @@ export type RouteListItemType = {
 export type RouteDepartureTimesType = {
   departureTimes: string[]; // timestamp
 };
+
+export type RouteListReducerDispatch = {
+  type: string;
+  route: RouteListItemType;
+};
