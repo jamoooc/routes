@@ -63,7 +63,7 @@ function App() {
     <div className="App">
       <Header setOpen={setSideMenuOpen} />
       <SideMenu open={sideMenuOpen} setOpen={setSideMenuOpen} />
-      <Routes routes={routes} />
+      <Routes routes={routes} dispatch={dispatch} />
     </div>
   );
 }

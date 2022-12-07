@@ -6,6 +6,7 @@ export default function routeListReducer(
 ) {
   switch (action.type) {
     case "delete": {
+      console.log("routeListReducer:delete");
       return routes.filter((route) => route.id !== action.route.id);
     }
     default: {

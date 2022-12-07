@@ -4,22 +4,31 @@ import type {
   RouteNameType,
   RouteListItemType,
   RouteDepartureTimesType,
+  RouteListReducerDispatch,
 } from "../../types";
 
 export default function Routes({
   routes,
+  dispatch,
 }: {
   routes: RouteListItemType[];
+  dispatch: React.Dispatch<RouteListReducerDispatch>;
 }): JSX.Element {
   return (
     <div className={classes.routeContainer}>
       <h1 className={classes.headerOne}>Routes</h1>
-      <RouteList routes={routes} />
+      <RouteList routes={routes} dispatch={dispatch} />
     </div>
   );
 }
 
-function RouteList({ routes }: { routes: RouteListItemType[] }): JSX.Element {
+function RouteList({
+  routes,
+  dispatch,
+}: {
+  routes: RouteListItemType[];
+  dispatch: React.Dispatch<RouteListReducerDispatch>;
+}): JSX.Element {
   return (
     <section className={classes.sectionContainer}>
       {!routes.length ? (
@@ -28,8 +37,9 @@ function RouteList({ routes }: { routes: RouteListItemType[] }): JSX.Element {
         <ul className={classes.routeList}>
           {(routes || []).map((routeListItem: RouteListItemType) => (
             <RouteListItem
-              key={routeListItem.origin.naptanID}
+              key={routeListItem.id}
               routeListItem={routeListItem}
+              dispatch={dispatch}
             />
           ))}
         </ul>
@@ -40,15 +50,17 @@ function RouteList({ routes }: { routes: RouteListItemType[] }): JSX.Element {
 
 function RouteListItem({
   routeListItem,
+  dispatch,
 }: {
   routeListItem: RouteListItemType;
+  dispatch: React.Dispatch<RouteListReducerDispatch>;
 }): JSX.Element {
   const { origin, destination } = routeListItem;
   return (
     <li className={classes.routeListItem}>
       <div className={classes.routeListItemCard}>
         <RoutePoints origin={origin} destination={destination} />
-        <RouteMenu />
+        <RouteMenu dispatch={dispatch} routeListItem={routeListItem} />
         <RouteDepartureTimes
           departureTimes={[
             new Date().toLocaleTimeString(),
@@ -84,7 +96,13 @@ function RoutePoints({
   );
 }
 
-function RouteMenu() {
+function RouteMenu({
+  dispatch,
+  routeListItem,
+}: {
+  dispatch: React.Dispatch<RouteListReducerDispatch>;
+  routeListItem: RouteListItemType;
+}): JSX.Element {
   const [open, setOpen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -108,6 +126,19 @@ function RouteMenu() {
   function onFocusHandler() {
     console.log("onFocusHandler");
     clearTimeout(timeoutID);
+  }
+
+  function onDeleteHandler(e: React.MouseEvent<HTMLButtonElement>) {
+    console.log("onDeleteHandler");
+    setOpen(false);
+    dispatch({
+      type: "delete",
+      route: routeListItem,
+    });
+  }
+
+  function onEditHandler(e: React.MouseEvent<HTMLButtonElement>) {
+    console.log("onEditHandler");
   }
 
   return (
@@ -139,12 +170,20 @@ function RouteMenu() {
         <div className={classes.menuContainer}>
           <ul>
             <li>
-              <button title="Edit" onClick={(e) => console.log("Edit")}>
+              <button
+                title="Edit"
+                onFocus={onFocusHandler}
+                onClick={onEditHandler}
+              >
                 Edit
               </button>
             </li>
             <li>
-              <button title="Delete" onClick={(e) => console.log("Delete")}>
+              <button
+                title="Delete"
+                onFocus={onFocusHandler}
+                onClick={onDeleteHandler}
+              >
                 Delete
               </button>
             </li>
