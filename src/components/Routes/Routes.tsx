@@ -142,11 +142,26 @@ function RoutePoints({
 function RouteMenu() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
+  let timeoutID: NodeJS.Timeout;
+  function onBlurHandler() {
+    console.log("onBlurHandler");
+    timeoutID = setTimeout(() => {
+      setIsOpen(false);
+    });
+  }
+
+  function onFocusHandler() {
+    console.log("onFocusHandler");
+    clearTimeout(timeoutID);
+  }
+
   return (
     <nav className={classes.routeMenuNav}>
       <button
         className={classes.routeMenuButton}
         onClick={() => setIsOpen(!isOpen)}
+        onBlur={onBlurHandler}
+        onFocus={onFocusHandler}
         aria-haspopup="menu"
         aria-expanded={isOpen}
       >
