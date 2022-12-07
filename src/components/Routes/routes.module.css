@@ -86,11 +86,11 @@
   line-height: 1.2rem;
   background-color: rgba(235, 235, 235, 0.2);
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 1fr 25px;
   grid-template-rows: minmax(2.5rem, auto) minmax(4rem, auto);
 }
 
-/* route-points */
+/* routePoints */
 
 .routePointsContainer {
   grid-column: 1 / 2;
@@ -126,4 +126,82 @@
 .routeDepartureTimeTitle {
   font-weight: 500;
   margin: 0;
+}
+
+/* routeMenu */
+
+.routeMenuNav {
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+  position: relative;
+}
+
+.routeMenuButton {
+  border: none;
+  padding: 0;
+  font-size: 1rem;
+  font-family: inherit;
+  background-color: transparent;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+
+.svg {
+  width: 25px;
+  height: 25px;
+  stroke: rgba(235, 235, 235, 0.6);
+  transition: stroke 0.3s ease-out;
+  will-change: filter;
+  z-index: 1;
+}
+
+.svg:hover {
+  cursor: pointer;
+  transition: stroke 0.3s ease-out;
+  stroke: rgba(235, 235, 235, 1);
+  filter: drop-shadow(0 0 4px rgba(202, 202, 202, 0.6));
+}
+
+.menuContainer {
+  display: flex;
+  flex-direction: row;
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 6px 30px 6px 10px;
+  margin-right: -5px;
+  background-color: rgba(29, 29, 29, 0.4);
+  border-radius: 5px;
+}
+
+.menuContainer ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.menuContainer li {
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(235, 235, 235, 0.6);
+}
+
+.menuContainer li:last-child {
+  padding-top: 4px;
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.menuContainer li > button {
+  border: none;
+  padding-left: 5px;
+  background-color: transparent;
+  cursor: pointer;
+  color: rgba(235, 235, 235, 0.8);
+  transition: color 0.3s ease-out;
+}
+
+.menuContainer li > button:hover {
+  transition: color 0.3s ease-out;
+  color: rgba(235, 235, 235, 1);
+  filter: drop-shadow(0 0 4px rgba(202, 202, 202, 0.6));
 }

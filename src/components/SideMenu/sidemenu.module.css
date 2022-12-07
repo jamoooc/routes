@@ -8,7 +8,7 @@
   border-left: 1px solid rgba(21, 21, 21, 0.2);
   overflow-y: scroll;
   overflow-x: auto;
-  z-index: 1;
+  z-index: 2;
 }
 
 .backgroundContainer {
@@ -18,7 +18,7 @@
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.6);
-  z-index: 0;
+  z-index: 1;
 }
 
 .container {

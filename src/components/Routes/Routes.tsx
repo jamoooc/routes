@@ -1,3 +1,4 @@
+import { useState } from "react";
 import classes from "./routes.module.css";
 
 export type RouteNameType = {
@@ -102,6 +103,7 @@ function RouteListItem({
     <li className={classes.routeListItem}>
       <div className={classes.routeListItemCard}>
         <RoutePoints origin={origin} destination={destination} />
+        <RouteMenu />
         <RouteDepartureTimes
           departureTimes={[
             new Date().toLocaleTimeString(),
@@ -134,6 +136,52 @@ function RoutePoints({
         <span className={classes.routePointsName}>{origin.commonName}</span>
       </p>
     </div>
+  );
+}
+
+function RouteMenu() {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  return (
+    <nav className={classes.routeMenuNav}>
+      <button
+        className={classes.routeMenuButton}
+        onClick={() => setIsOpen(!isOpen)}
+        aria-haspopup="menu"
+        aria-expanded={isOpen}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
+          className={classes.svg}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M6.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM18.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
+          />
+        </svg>
+      </button>
+      {isOpen && (
+        <div className={classes.menuContainer}>
+          <ul>
+            <li>
+              <button title="Edit" onClick={(e) => console.log("Edit")}>
+                Edit
+              </button>
+            </li>
+            <li>
+              <button title="Delete" onClick={(e) => console.log("Delete")}>
+                Delete
+              </button>
+            </li>
+          </ul>
+        </div>
+      )}
+    </nav>
   );
 }
 
