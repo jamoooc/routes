@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import classes from "./routes.module.css";
 import type {
   RouteNameType,
@@ -85,13 +85,23 @@ function RoutePoints({
 }
 
 function RouteMenu() {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    const close = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("keydown", close);
+    return () => document.removeEventListener("keydown", close);
+  }, []);
 
   let timeoutID: NodeJS.Timeout;
   function onBlurHandler() {
     console.log("onBlurHandler");
     timeoutID = setTimeout(() => {
-      setIsOpen(false);
+      setOpen(false);
     });
   }
 
@@ -104,11 +114,11 @@ function RouteMenu() {
     <nav className={classes.routeMenuNav}>
       <button
         className={classes.routeMenuButton}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => setOpen(!open)}
         onBlur={onBlurHandler}
         onFocus={onFocusHandler}
         aria-haspopup="menu"
-        aria-expanded={isOpen}
+        aria-expanded={open}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -125,7 +135,7 @@ function RouteMenu() {
           />
         </svg>
       </button>
-      {isOpen && (
+      {open && (
         <div className={classes.menuContainer}>
           <ul>
             <li>
