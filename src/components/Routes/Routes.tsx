@@ -1,71 +1,16 @@
 import { useState } from "react";
 import classes from "./routes.module.css";
+import type {
+  RouteNameType,
+  RouteListItemType,
+  RouteDepartureTimesType,
+} from "../../types";
 
-export type RouteNameType = {
-  commonName: string;
-  naptanID: string;
-};
-
-export type RouteListItemType = {
-  id: number;
-  origin: RouteNameType;
-  destination: RouteNameType;
-};
-
-export type RouteDepartureTimesType = {
-  departureTimes: string[]; // timestamp
-};
-
-const data: RouteNameType[] = [
-  {
-    commonName: "Liverpool Street Underground Station",
-    naptanID: "940GZZLULVT",
-  },
-  {
-    commonName: "East Acton Underground Station",
-    naptanID: "940GZZLUEAN",
-  },
-];
-
-const routes = [
-  {
-    id: 123,
-    origin: data[0],
-    destination: data[1],
-  },
-  {
-    id: 456,
-    origin: data[1],
-    destination: data[0],
-  },
-  {
-    id: 789,
-    origin: data[0],
-    destination: data[1],
-  },
-  {
-    id: 135,
-    origin: data[1],
-    destination: data[0],
-  },
-  {
-    id: 246,
-    origin: data[0],
-    destination: data[1],
-  },
-  {
-    id: 654,
-    origin: data[1],
-    destination: data[0],
-  },
-  {
-    id: 423,
-    origin: data[0],
-    destination: data[1],
-  },
-];
-
-export default function Routes(): JSX.Element {
+export default function Routes({
+  routes,
+}: {
+  routes: RouteListItemType[];
+}): JSX.Element {
   return (
     <div className={classes.routeContainer}>
       <h1 className={classes.headerOne}>Routes</h1>
