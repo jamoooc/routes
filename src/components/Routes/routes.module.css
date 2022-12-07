@@ -1,7 +1,129 @@
 .routeContainer {
-  width: 80vw;
+  width: 95vw;
+}
+
+@media screen and (min-width: 840px) {
+  .routeContainer {
+    width: 90vw;
+  }
 }
 
 .headerOne {
   color: rgba(235, 235, 235, 0.8);
+  margin: 15px 0 15px 0;
+}
+
+.sectionContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* use single grid track on small screens */
+.routeList {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(1, 1fr);
+  row-gap: 10px;
+  column-gap: 10px;
+  padding: 0;
+  margin: 0;
+  max-height: calc(97vh - 129px);
+  overflow-y: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* use two grid tracks on large screens */
+@media screen and (min-width: 840px) {
+  .routeList {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.routeList::-webkit-scrollbar {
+  display: none;
+}
+
+/* routeListItem */
+
+/* center align a single column */
+.routeListItem {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-content: center;
+}
+
+@media screen and (min-width: 840px) {
+  /* right align the left column */
+  .routeListItem {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-content: center;
+  }
+
+  /* left align the right column */
+  .routeListItem:nth-child(odd) {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    align-content: center;
+  }
+}
+
+.routeListItemCard {
+  width: 100%;
+  max-width: 420px;
+  text-align: left;
+  font-size: 0.9rem;
+  border-radius: 10px;
+  box-sizing: border-box;
+  padding: 0.7rem 0.9rem 0.7rem 0.9rem;
+  line-height: 1.2rem;
+  background-color: rgba(235, 235, 235, 0.2);
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: minmax(2.5rem, auto) minmax(4rem, auto);
+}
+
+/* route-points */
+
+.routePointsContainer {
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+}
+
+.routePointsDirection {
+  font-weight: 500;
+  margin: 0;
+}
+
+.routePointsName {
+  font-weight: 300;
+}
+
+/* route-departure-times */
+
+.routeDepartureTimeContainer {
+  grid-column: 1 / 2;
+  grid-row: 2 / 3;
+}
+
+.routeDepartureTimeList {
+  list-style-type: decimal;
+  list-style-position: inside;
+  padding: 0;
+}
+
+.routeDepartureTimeItem {
+  font-size: 0.9rem;
+}
+
+.routeDepartureTimeTitle {
+  font-weight: 500;
+  margin: 0;
 }
