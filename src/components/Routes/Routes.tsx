@@ -3,7 +3,7 @@ import classes from "./routes.module.css";
 import type {
   RouteNameType,
   RouteListItemType,
-  RouteDepartureTimesType,
+  RouteInformationType,
   RouteListReducerDispatch,
 } from "../../types";
 
@@ -85,11 +85,14 @@ function RouteListItem({
           routeListItem={routeListItem}
         />
         <RouteDepartureTimes
-          departureTimes={[
-            new Date().toLocaleTimeString(),
-            new Date().toLocaleTimeString(),
-            new Date().toLocaleTimeString(),
-          ]}
+          editing={editing}
+          routeInformation={{
+            departureTimes: [
+              new Date().toLocaleTimeString(),
+              new Date().toLocaleTimeString(),
+              new Date().toLocaleTimeString(),
+            ],
+          }}
         />
       </div>
     </li>
@@ -308,15 +311,25 @@ function RouteMenu({
 }
 
 function RouteDepartureTimes({
-  departureTimes,
-}: RouteDepartureTimesType): JSX.Element {
+  editing,
+  routeInformation,
+}: {
+  editing: boolean;
+  routeInformation: RouteInformationType;
+}): JSX.Element {
   return (
     <div className={classes.routeDepartureTimeContainer}>
       <h4 className={classes.routeDepartureTimeTitle}>Departures:</h4>
-      <ul className={classes.routeDepartureTimeList}>
-        {!departureTimes.length
+      <ul
+        className={
+          classes.routeDepartureTimeList +
+          " " +
+          (editing === true ? classes.routeDepartureBg : "")
+        }
+      >
+        {!routeInformation.departureTimes.length
           ? "No departures found"
-          : departureTimes.map((departureTime, idx) => (
+          : routeInformation.departureTimes.map((departureTime, idx) => (
               <li key={idx} className={classes.routeDepartureTimeItem}>
                 {departureTime}
               </li>

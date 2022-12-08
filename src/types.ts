@@ -9,7 +9,7 @@ export type RouteListItemType = {
   destination: RouteNameType;
 };
 
-export type RouteDepartureTimesType = {
+export type RouteInformationType = {
   departureTimes: string[]; // timestamp
 };
 
