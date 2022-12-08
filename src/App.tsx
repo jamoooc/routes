@@ -1,4 +1,4 @@
-import { useState, useReducer } from "react";
+import { useState, useEffect, useReducer } from "react";
 import Header from "./components/Header/Header";
 import Routes from "./components/Routes/Routes";
 import SideMenu from "./components/SideMenu/SideMenu";
@@ -57,13 +57,21 @@ const routesData = [
 
 function App() {
   const [sideMenuOpen, setSideMenuOpen] = useState<boolean>(false);
-  const [routes, dispatch] = useReducer(routeListReducer, routesData);
+  const [routes, dispatch] = useReducer(routeListReducer, routesData); // TODO: init with []
+  const [stationData, setStationData] = useState<RouteNameType[]>([]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      console.log("mock fetching stationData");
+      setStationData(data);
+    }, 1000);
+  }, [stationData]);
 
   return (
     <div className="App">
       <Header setOpen={setSideMenuOpen} />
       <SideMenu open={sideMenuOpen} setOpen={setSideMenuOpen} />
-      <Routes routes={routes} dispatch={dispatch} />
+      <Routes routes={routes} dispatch={dispatch} stationData={stationData} />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import classes from "./routes.module.css";
 import type {
   RouteNameType,
@@ -10,14 +10,20 @@ import type {
 export default function Routes({
   routes,
   dispatch,
+  stationData,
 }: {
   routes: RouteListItemType[];
   dispatch: React.Dispatch<RouteListReducerDispatch>;
+  stationData: RouteNameType[];
 }): JSX.Element {
   return (
     <div className={classes.routeContainer}>
       <h1 className={classes.headerOne}>Routes</h1>
-      <RouteList routes={routes} dispatch={dispatch} />
+      <RouteList
+        routes={routes}
+        dispatch={dispatch}
+        stationData={stationData}
+      />
     </div>
   );
 }
@@ -25,9 +31,11 @@ export default function Routes({
 function RouteList({
   routes,
   dispatch,
+  stationData,
 }: {
   routes: RouteListItemType[];
   dispatch: React.Dispatch<RouteListReducerDispatch>;
+  stationData: RouteNameType[];
 }): JSX.Element {
   return (
     <section className={classes.sectionContainer}>
@@ -39,6 +47,7 @@ function RouteList({
             <RouteListItem
               key={routeListItem.id}
               routeListItem={routeListItem}
+              stationData={stationData}
               dispatch={dispatch}
             />
           ))}
@@ -50,17 +59,31 @@ function RouteList({
 
 function RouteListItem({
   routeListItem,
+  stationData,
   dispatch,
 }: {
   routeListItem: RouteListItemType;
+  stationData: RouteNameType[];
   dispatch: React.Dispatch<RouteListReducerDispatch>;
 }): JSX.Element {
-  const { origin, destination } = routeListItem;
+  const [editing, setEditing] = useState<boolean>(false);
+
   return (
     <li className={classes.routeListItem}>
       <div className={classes.routeListItemCard}>
-        <RoutePoints origin={origin} destination={destination} />
-        <RouteMenu dispatch={dispatch} routeListItem={routeListItem} />
+        <RoutePoints
+          editing={editing}
+          dispatch={dispatch}
+          setEditing={setEditing}
+          stationData={stationData}
+          currentRoute={routeListItem}
+        />
+        <RouteMenu
+          editing={editing}
+          dispatch={dispatch}
+          setEditing={setEditing}
+          routeListItem={routeListItem}
+        />
         <RouteDepartureTimes
           departureTimes={[
             new Date().toLocaleTimeString(),
@@ -74,23 +97,107 @@ function RouteListItem({
 }
 
 function RoutePoints({
-  origin,
-  destination,
+  currentRoute,
+  editing,
+  setEditing,
+  stationData,
+  dispatch,
 }: {
-  origin: RouteNameType;
-  destination: RouteNameType;
+  currentRoute: RouteListItemType;
+  editing: boolean;
+  setEditing: React.Dispatch<React.SetStateAction<boolean>>;
+  stationData: RouteNameType[];
+  dispatch: React.Dispatch<RouteListReducerDispatch>;
 }): JSX.Element {
-  return (
+  const [newOrigin, setNewOrigin] = useState<RouteNameType>(
+    currentRoute.origin
+  );
+  const [newDestination, setNewDestination] = useState<RouteNameType>(
+    currentRoute.destination
+  );
+
+  function onChange(
+    e: React.ChangeEvent<HTMLSelectElement>,
+    setState: React.Dispatch<React.SetStateAction<RouteNameType>>
+  ) {
+    console.log("called onChange");
+    const selectedStation = stationData.find(
+      (datum) => datum.naptanID === e.target.value
+    );
+    if (selectedStation) {
+      setState(selectedStation);
+    }
+  }
+
+  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    console.log("onSubmit");
+    e.preventDefault();
+    dispatch({
+      type: "update",
+      route: {
+        ...currentRoute,
+        origin: newOrigin,
+        destination: newDestination,
+      },
+    });
+    setEditing(false);
+  }
+  return editing ? (
+    <form className={classes.routePointsFormContainer} onSubmit={onSubmit}>
+      <div className={classes.routePointsLabelContainer}>
+        <label htmlFor="destination">To: </label>
+        <select
+          className={classes.routePointsSelect}
+          key="destination"
+          id="destination"
+          defaultValue={currentRoute.destination.naptanID}
+          onChange={(e) => onChange(e, setNewDestination)}
+        >
+          {stationData.map((station: RouteNameType) => (
+            <option key={station.naptanID} value={station.naptanID}>
+              {station.commonName}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className={classes.routePointsLabelContainer}>
+        <label htmlFor="origin">From: </label>
+        <select
+          className={classes.routePointsSelect}
+          key="origin"
+          id="origin"
+          defaultValue={currentRoute.origin.naptanID}
+          onChange={(e) => onChange(e, setNewOrigin)}
+        >
+          {stationData.map((station: RouteNameType) => (
+            <option key={station.naptanID} value={station.naptanID}>
+              {station.commonName}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className={classes.editFormButtonContainer}>
+        <button type="submit">
+          <div>Submit</div>
+        </button>
+        <button type="button" onClick={() => setEditing(false)}>
+          <div>Cancel</div>
+        </button>
+      </div>
+    </form>
+  ) : (
     <div className={classes.routePointsContainer}>
       <p className={classes.routePointsDirection}>
         To:{" "}
         <span className={classes.routePointsName}>
-          {destination.commonName}
+          {currentRoute.destination.commonName}
         </span>
       </p>
       <p className={classes.routePointsDirection}>
         From:{" "}
-        <span className={classes.routePointsName}>{origin.commonName}</span>
+        <span className={classes.routePointsName}>
+          {currentRoute.origin.commonName}
+        </span>
       </p>
     </div>
   );
@@ -99,9 +206,13 @@ function RoutePoints({
 function RouteMenu({
   dispatch,
   routeListItem,
+  editing,
+  setEditing,
 }: {
   dispatch: React.Dispatch<RouteListReducerDispatch>;
   routeListItem: RouteListItemType;
+  editing: boolean;
+  setEditing: React.Dispatch<React.SetStateAction<boolean>>;
 }): JSX.Element {
   const [open, setOpen] = useState<boolean>(false);
 
@@ -139,6 +250,8 @@ function RouteMenu({
 
   function onEditHandler(e: React.MouseEvent<HTMLButtonElement>) {
     console.log("onEditHandler");
+    setOpen(false);
+    setEditing(!editing);
   }
 
   return (
