@@ -5,6 +5,9 @@ export default function routeListReducer(
   action: RouteListReducerDispatch
 ) {
   switch (action.type) {
+    case "add": {
+      return [...routes, action.route];
+    }
     case "update": {
       console.log("routeListReducer:update");
       return routes.map((route) =>

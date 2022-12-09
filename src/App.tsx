@@ -17,60 +17,35 @@ const data: RouteNameType[] = [
   },
 ];
 
-const routesData = [
-  {
-    id: 123,
-    origin: data[0],
-    destination: data[1],
-  },
-  {
-    id: 456,
-    origin: data[1],
-    destination: data[0],
-  },
-  {
-    id: 789,
-    origin: data[0],
-    destination: data[1],
-  },
-  {
-    id: 135,
-    origin: data[1],
-    destination: data[0],
-  },
-  {
-    id: 246,
-    origin: data[0],
-    destination: data[1],
-  },
-  {
-    id: 654,
-    origin: data[1],
-    destination: data[0],
-  },
-  {
-    id: 423,
-    origin: data[0],
-    destination: data[1],
-  },
-];
-
 function App() {
-  const [sideMenuOpen, setSideMenuOpen] = useState<boolean>(false);
-  const [routes, dispatch] = useReducer(routeListReducer, routesData); // TODO: init with []
+  const [aboutMenuOpen, setAboutMenuOpen] = useState<boolean>(false);
+  const [routeMenuOpen, setRouteMenuOpen] = useState<boolean>(false);
+  const [routes, dispatch] = useReducer(routeListReducer, []);
   const [stationData, setStationData] = useState<RouteNameType[]>([]);
 
   useEffect(() => {
+    console.log("fetching stationData");
     setTimeout(() => {
-      console.log("mock fetching stationData");
       setStationData(data);
+      console.log("fetched stationData");
     }, 1000);
-  }, [stationData]);
+  }, []);
 
   return (
     <div className="App">
-      <Header setOpen={setSideMenuOpen} />
-      <SideMenu open={sideMenuOpen} setOpen={setSideMenuOpen} />
+      <Header
+        setAboutMenuOpen={setAboutMenuOpen}
+        setRouteMenuOpen={setRouteMenuOpen}
+      />
+      <SideMenu
+        aboutMenuOpen={aboutMenuOpen}
+        setAboutMenuOpen={setAboutMenuOpen}
+        routeMenuOpen={routeMenuOpen}
+        setRouteMenuOpen={setRouteMenuOpen}
+        stationData={stationData}
+        dispatch={dispatch}
+        routes={routes}
+      />
       <Routes routes={routes} dispatch={dispatch} stationData={stationData} />
     </div>
   );

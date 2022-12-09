@@ -1,9 +1,11 @@
 import classes from "./header.module.css";
 
 export default function Header({
-  setOpen,
+  setAboutMenuOpen,
+  setRouteMenuOpen,
 }: {
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setAboutMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setRouteMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   return (
     <header className={classes.header}>
@@ -24,7 +26,14 @@ export default function Header({
         <nav className={classes.nav}>
           <button
             className={classes.aboutButton}
-            onClick={() => setOpen(true)}
+            onClick={() => setRouteMenuOpen(true)}
+            title="Add route"
+          >
+            <p className={classes.aboutText}>Add route</p>
+          </button>
+          <button
+            className={classes.aboutButton}
+            onClick={() => setAboutMenuOpen(true)}
             title="About"
           >
             <p className={classes.aboutText}>About</p>
