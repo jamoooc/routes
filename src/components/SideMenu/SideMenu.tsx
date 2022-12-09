@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, SetStateAction } from "react";
 import classes from "./sidemenu.module.css";
 import type {
   RouteListItemType,
@@ -94,6 +94,7 @@ export default function SideMenu({
           <div className={classes.contentContainer}>
             {routeMenuOpen && (
               <RouteForm
+                setRouteMenuOpen={setRouteMenuOpen}
                 stationData={stationData}
                 dispatch={dispatch}
                 routes={routes}
@@ -121,10 +122,12 @@ function RouteForm({
   stationData,
   dispatch,
   routes,
+  setRouteMenuOpen,
 }: {
   stationData: RouteNameType[];
   dispatch: React.Dispatch<RouteListReducerDispatch>;
   routes: RouteListItemType[];
+  setRouteMenuOpen: React.Dispatch<SetStateAction<boolean>>;
 }) {
   if (!stationData.length) {
     return <></>; // TODO: err
@@ -158,6 +161,7 @@ function RouteForm({
           destination,
         },
       });
+      setRouteMenuOpen(false);
     }
   }
 
