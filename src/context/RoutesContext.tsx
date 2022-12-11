@@ -7,12 +7,20 @@ export const RoutesDispatchContext = createContext<
   React.Dispatch<RouteListReducerDispatch>
 >(() => {});
 
+function getStoredRoutes() {
+  const storedRoutes = localStorage.getItem("routes");
+  if (storedRoutes) {
+    console.info("Restored routes from local storage.", storedRoutes);
+  }
+  return JSON.parse(storedRoutes || "[]");
+}
+
 export default function RoutesProvider({
   children,
 }: {
   children: JSX.Element;
 }) {
-  const [routes, dispatch] = useReducer(routeListReducer, []);
+  const [routes, dispatch] = useReducer(routeListReducer, getStoredRoutes());
 
   return (
     <RoutesContext.Provider value={routes}>
