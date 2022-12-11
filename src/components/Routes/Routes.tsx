@@ -35,7 +35,13 @@ function RouteList({
       {!routes.length ? (
         <p>Add a route!</p>
       ) : (
-        <ul className={classes.routeList}>
+        <ul
+          className={
+            routes.length > 3
+              ? classes.routeList
+              : classes.routeListSingleColumn
+          }
+        >
           {(routes || []).map((routeListItem: RouteListItemType) => (
             <RouteListItem
               key={routeListItem.id}
@@ -57,9 +63,16 @@ function RouteListItem({
   stationData: RouteNameType[];
 }): JSX.Element {
   const [editing, setEditing] = useState<boolean>(false);
+  const routes = useContext(RoutesContext);
 
   return (
-    <li className={classes.routeListItem}>
+    <li
+      className={
+        routes.length > 3
+          ? classes.routeListItem
+          : classes.routeListItemSingleColumn
+      }
+    >
       <div className={classes.routeListItemCard}>
         <RoutePoints
           editing={editing}

@@ -24,8 +24,7 @@
   display: grid;
   width: 100%;
   grid-template-columns: repeat(1, 1fr);
-  row-gap: 10px;
-  column-gap: 10px;
+  gap: 10px;
   padding: 0;
   margin: 0;
   max-height: calc(97vh - 129px);
@@ -47,10 +46,35 @@
   display: none;
 }
 
+.routeListSingleColumn {
+  display: grid;
+  width: 100%;
+  gap: 10px;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 10px;
+  padding: 0;
+  margin: 0;
+  max-height: calc(97vh - 129px);
+  overflow-y: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.routeListSingleColumn::-webkit-scrollbar {
+  display: none;
+}
+
 /* routeListItem */
 
 /* center align a single column */
 .routeListItem {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-content: center;
+}
+
+.routeListItemSingleColumn {
   display: flex;
   flex-direction: row;
   justify-content: center;
