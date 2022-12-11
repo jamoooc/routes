@@ -4,19 +4,19 @@ import {
   RoutesDispatchContext,
 } from "../../context/RoutesContext";
 import classes from "./sidemenu.module.css";
-import type { RouteListItemType, RouteNameType } from "../../types";
+import type {
+  RouteListItemType,
+  RouteNameType,
+  SideMenuStatus,
+} from "../../types";
 
 export default function SideMenu({
-  routeMenuOpen,
-  aboutMenuOpen,
-  setRouteMenuOpen,
-  setAboutMenuOpen,
+  menuStatus,
+  setMenuStatus,
   stationData,
 }: {
-  aboutMenuOpen: boolean;
-  routeMenuOpen: boolean;
-  setRouteMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setAboutMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  menuStatus: SideMenuStatus;
+  setMenuStatus: React.Dispatch<React.SetStateAction<SideMenuStatus>>;
   stationData: RouteNameType[];
 }) {
   const closeSideMenuRef = useRef<HTMLButtonElement>(null);
@@ -26,30 +26,28 @@ export default function SideMenu({
     if (closeSideMenuRef.current) {
       closeSideMenuRef.current.focus();
     }
-  }, [aboutMenuOpen, routeMenuOpen]);
+  }, [menuStatus]);
 
   useEffect(() => {
     const close = (e: KeyboardEvent) => {
       // prevent exiting a full screen window if a no menu open
-      if (e.key === "Escape" && (routeMenuOpen || aboutMenuOpen)) {
+      if (e.key === "Escape" && menuStatus !== "closed") {
         e.preventDefault();
-        setAboutMenuOpen(false);
-        setRouteMenuOpen(false);
+        setMenuStatus("closed");
       }
     };
     document.addEventListener("keydown", close);
     return () => document.removeEventListener("keydown", close);
-  }, [aboutMenuOpen, routeMenuOpen]);
+  }, [menuStatus]);
 
-  return !aboutMenuOpen && !routeMenuOpen ? (
+  return menuStatus === "closed" ? (
     <></>
   ) : (
     <>
       <div
         className={classes.backgroundContainer}
         onClick={() => {
-          setAboutMenuOpen(false);
-          setRouteMenuOpen(false);
+          setMenuStatus("closed");
         }}
       ></div>
       <div className={classes.menuContainer}>
@@ -60,8 +58,7 @@ export default function SideMenu({
                 className={classes.closeButton}
                 ref={closeSideMenuRef}
                 onClick={() => {
-                  setAboutMenuOpen(false);
-                  setRouteMenuOpen(false);
+                  setMenuStatus("closed");
                 }}
                 title="Close"
               >
@@ -82,21 +79,23 @@ export default function SideMenu({
               </button>
             </div>
             <div className={classes.headerContainer}>
-              {routeMenuOpen && (
+              {menuStatus === "addRoute" && (
                 <h2 className={classes.aboutHeader}>Add route</h2>
               )}
-              {aboutMenuOpen && <h2 className={classes.aboutHeader}>About</h2>}
+              {menuStatus === "about" && (
+                <h2 className={classes.aboutHeader}>About</h2>
+              )}
             </div>
           </div>
           <div className={classes.contentContainer}>
-            {routeMenuOpen && (
+            {menuStatus === "addRoute" && (
               <RouteForm
-                setRouteMenuOpen={setRouteMenuOpen}
+                setMenuStatus={setMenuStatus}
                 stationData={stationData}
                 routes={routes}
               />
             )}
-            {aboutMenuOpen && (
+            {menuStatus === "about" && (
               <p>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
                 eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
@@ -117,11 +116,11 @@ export default function SideMenu({
 function RouteForm({
   stationData,
   routes,
-  setRouteMenuOpen,
+  setMenuStatus,
 }: {
   stationData: RouteNameType[];
   routes: RouteListItemType[];
-  setRouteMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setMenuStatus: React.Dispatch<React.SetStateAction<SideMenuStatus>>;
 }) {
   if (!stationData.length) {
     return <></>; // TODO: err
@@ -156,7 +155,7 @@ function RouteForm({
           destination,
         },
       });
-      setRouteMenuOpen(false);
+      setMenuStatus("closed");
     }
   }
 

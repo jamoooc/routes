@@ -17,3 +17,5 @@ export type RouteListReducerDispatch = {
   type: string;
   route: RouteListItemType;
 };
+
+export type SideMenuStatus = ("closed" | "addRoute" | "about");

@@ -1,11 +1,10 @@
+import { SideMenuStatus } from "../../types";
 import classes from "./header.module.css";
 
 export default function Header({
-  setAboutMenuOpen,
-  setRouteMenuOpen,
+  setMenuStatus,
 }: {
-  setAboutMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setRouteMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setMenuStatus: React.Dispatch<React.SetStateAction<SideMenuStatus>>;
 }) {
   return (
     <header className={classes.header}>
@@ -26,14 +25,14 @@ export default function Header({
         <nav className={classes.nav}>
           <button
             className={classes.aboutButton}
-            onClick={() => setRouteMenuOpen(true)}
+            onClick={() => setMenuStatus("addRoute")}
             title="Add route"
           >
             <p className={classes.aboutText}>Add route</p>
           </button>
           <button
             className={classes.aboutButton}
-            onClick={() => setAboutMenuOpen(true)}
+            onClick={() => setMenuStatus("about")}
             title="About"
           >
             <p className={classes.aboutText}>About</p>

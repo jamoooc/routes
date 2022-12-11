@@ -3,7 +3,7 @@ import RoutesProvider from "./context/RoutesContext";
 import Header from "./components/Header/Header";
 import Routes from "./components/Routes/Routes";
 import SideMenu from "./components/SideMenu/SideMenu";
-import type { RouteNameType } from "./types";
+import type { RouteNameType, SideMenuStatus } from "./types";
 import "./App.css";
 
 const data: RouteNameType[] = [
@@ -18,8 +18,7 @@ const data: RouteNameType[] = [
 ];
 
 function App() {
-  const [aboutMenuOpen, setAboutMenuOpen] = useState<boolean>(false);
-  const [routeMenuOpen, setRouteMenuOpen] = useState<boolean>(false);
+  const [menuStatus, setMenuStatus] = useState<SideMenuStatus>("closed");
   const [stationData, setStationData] = useState<RouteNameType[]>([]);
 
   useEffect(() => {
@@ -34,15 +33,10 @@ function App() {
     <div className="App">
       <RoutesProvider>
         <>
-          <Header
-            setAboutMenuOpen={setAboutMenuOpen}
-            setRouteMenuOpen={setRouteMenuOpen}
-          />
+          <Header setMenuStatus={setMenuStatus} />
           <SideMenu
-            aboutMenuOpen={aboutMenuOpen}
-            setAboutMenuOpen={setAboutMenuOpen}
-            routeMenuOpen={routeMenuOpen}
-            setRouteMenuOpen={setRouteMenuOpen}
+            menuStatus={menuStatus}
+            setMenuStatus={setMenuStatus}
             stationData={stationData}
           />
           <Routes stationData={stationData} />
