@@ -68,11 +68,7 @@ function RouteListItem({
           stationData={stationData}
           currentRoute={routeListItem}
         />
-        <RouteMenu
-          editing={editing}
-          setEditing={setEditing}
-          routeListItem={routeListItem}
-        />
+        <RouteMenu setEditing={setEditing} routeListItem={routeListItem} />
         <RouteDepartureTimes
           editing={editing}
           routeInformation={{
@@ -196,11 +192,9 @@ function RoutePoints({
 
 function RouteMenu({
   routeListItem,
-  editing,
   setEditing,
 }: {
   routeListItem: RouteListItemType;
-  editing: boolean;
   setEditing: React.Dispatch<React.SetStateAction<boolean>>;
 }): JSX.Element {
   const [open, setOpen] = useState<boolean>(false);
