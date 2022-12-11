@@ -30,19 +30,17 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
-      <RoutesProvider>
-        <>
-          <Header setMenuStatus={setMenuStatus} />
-          <SideMenu
-            menuStatus={menuStatus}
-            setMenuStatus={setMenuStatus}
-            stationData={stationData}
-          />
-          <Routes stationData={stationData} />
-        </>
-      </RoutesProvider>
-    </div>
+    <RoutesProvider>
+      <div className="App">
+        <Header setMenuStatus={setMenuStatus} />
+        <SideMenu
+          menuStatus={menuStatus}
+          setMenuStatus={setMenuStatus}
+          stationData={stationData}
+        />
+        <Routes stationData={stationData} />
+      </div>
+    </RoutesProvider>
   );
 }
 
