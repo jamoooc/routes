@@ -62,7 +62,7 @@
   .routeListItem {
     display: flex;
     flex-direction: row;
-    justify-content: start;
+    justify-content: flex-start;
     align-content: center;
   }
 
@@ -70,7 +70,7 @@
   .routeListItem:nth-child(odd) {
     display: flex;
     flex-direction: row;
-    justify-content: end;
+    justify-content: flex-end;
     align-content: center;
   }
 }
