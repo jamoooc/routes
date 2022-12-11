@@ -1,10 +1,10 @@
-import React, { useRef, useState, useEffect, SetStateAction } from "react";
+import React, { useRef, useState, useEffect, useContext } from "react";
+import {
+  RoutesContext,
+  RoutesDispatchContext,
+} from "../../context/RoutesContext";
 import classes from "./sidemenu.module.css";
-import type {
-  RouteListItemType,
-  RouteListReducerDispatch,
-  RouteNameType,
-} from "../../types";
+import type { RouteListItemType, RouteNameType } from "../../types";
 
 export default function SideMenu({
   routeMenuOpen,
@@ -12,18 +12,15 @@ export default function SideMenu({
   setRouteMenuOpen,
   setAboutMenuOpen,
   stationData,
-  dispatch,
-  routes,
 }: {
   aboutMenuOpen: boolean;
   routeMenuOpen: boolean;
   setRouteMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setAboutMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
   stationData: RouteNameType[];
-  dispatch: React.Dispatch<RouteListReducerDispatch>;
-  routes: RouteListItemType[];
 }) {
   const closeSideMenuRef = useRef<HTMLButtonElement>(null);
+  const routes = useContext(RoutesContext);
 
   useEffect(() => {
     if (closeSideMenuRef.current) {
@@ -96,7 +93,6 @@ export default function SideMenu({
               <RouteForm
                 setRouteMenuOpen={setRouteMenuOpen}
                 stationData={stationData}
-                dispatch={dispatch}
                 routes={routes}
               />
             )}
@@ -120,19 +116,18 @@ export default function SideMenu({
 
 function RouteForm({
   stationData,
-  dispatch,
   routes,
   setRouteMenuOpen,
 }: {
   stationData: RouteNameType[];
-  dispatch: React.Dispatch<RouteListReducerDispatch>;
   routes: RouteListItemType[];
-  setRouteMenuOpen: React.Dispatch<SetStateAction<boolean>>;
+  setRouteMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   if (!stationData.length) {
     return <></>; // TODO: err
   }
 
+  const dispatch = useContext(RoutesDispatchContext);
   const [origin, setOrigin] = useState<RouteNameType>(stationData[0]);
   const [destination, setDestination] = useState<RouteNameType>(stationData[0]);
 

@@ -1,8 +1,8 @@
-import { useState, useEffect, useReducer } from "react";
+import { useState, useEffect } from "react";
+import RoutesProvider from "./context/RoutesContext";
 import Header from "./components/Header/Header";
 import Routes from "./components/Routes/Routes";
 import SideMenu from "./components/SideMenu/SideMenu";
-import routeListReducer from "./reducers/routeListReducer";
 import type { RouteNameType } from "./types";
 import "./App.css";
 
@@ -20,7 +20,6 @@ const data: RouteNameType[] = [
 function App() {
   const [aboutMenuOpen, setAboutMenuOpen] = useState<boolean>(false);
   const [routeMenuOpen, setRouteMenuOpen] = useState<boolean>(false);
-  const [routes, dispatch] = useReducer(routeListReducer, []);
   const [stationData, setStationData] = useState<RouteNameType[]>([]);
 
   useEffect(() => {
@@ -33,20 +32,22 @@ function App() {
 
   return (
     <div className="App">
-      <Header
-        setAboutMenuOpen={setAboutMenuOpen}
-        setRouteMenuOpen={setRouteMenuOpen}
-      />
-      <SideMenu
-        aboutMenuOpen={aboutMenuOpen}
-        setAboutMenuOpen={setAboutMenuOpen}
-        routeMenuOpen={routeMenuOpen}
-        setRouteMenuOpen={setRouteMenuOpen}
-        stationData={stationData}
-        dispatch={dispatch}
-        routes={routes}
-      />
-      <Routes routes={routes} dispatch={dispatch} stationData={stationData} />
+      <RoutesProvider>
+        <>
+          <Header
+            setAboutMenuOpen={setAboutMenuOpen}
+            setRouteMenuOpen={setRouteMenuOpen}
+          />
+          <SideMenu
+            aboutMenuOpen={aboutMenuOpen}
+            setAboutMenuOpen={setAboutMenuOpen}
+            routeMenuOpen={routeMenuOpen}
+            setRouteMenuOpen={setRouteMenuOpen}
+            stationData={stationData}
+          />
+          <Routes stationData={stationData} />
+        </>
+      </RoutesProvider>
     </div>
   );
 }

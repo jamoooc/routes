@@ -1,42 +1,35 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import {
+  RoutesContext,
+  RoutesDispatchContext,
+} from "../../context/RoutesContext";
 import classes from "./routes.module.css";
 import type {
   RouteNameType,
   RouteListItemType,
   RouteInformationType,
-  RouteListReducerDispatch,
 } from "../../types";
 
 export default function Routes({
-  routes,
-  dispatch,
   stationData,
 }: {
-  routes: RouteListItemType[];
-  dispatch: React.Dispatch<RouteListReducerDispatch>;
   stationData: RouteNameType[];
 }): JSX.Element {
   return (
     <div className={classes.routeContainer}>
       <h1 className={classes.headerOne}>Routes</h1>
-      <RouteList
-        routes={routes}
-        dispatch={dispatch}
-        stationData={stationData}
-      />
+      <RouteList stationData={stationData} />
     </div>
   );
 }
 
 function RouteList({
-  routes,
-  dispatch,
   stationData,
 }: {
-  routes: RouteListItemType[];
-  dispatch: React.Dispatch<RouteListReducerDispatch>;
   stationData: RouteNameType[];
 }): JSX.Element {
+  const routes = useContext(RoutesContext);
+
   return (
     <section className={classes.sectionContainer}>
       {!routes.length ? (
@@ -48,7 +41,6 @@ function RouteList({
               key={routeListItem.id}
               routeListItem={routeListItem}
               stationData={stationData}
-              dispatch={dispatch}
             />
           ))}
         </ul>
@@ -60,27 +52,24 @@ function RouteList({
 function RouteListItem({
   routeListItem,
   stationData,
-  dispatch,
 }: {
   routeListItem: RouteListItemType;
   stationData: RouteNameType[];
-  dispatch: React.Dispatch<RouteListReducerDispatch>;
 }): JSX.Element {
   const [editing, setEditing] = useState<boolean>(false);
+  const dispatch = useContext(RoutesDispatchContext);
 
   return (
     <li className={classes.routeListItem}>
       <div className={classes.routeListItemCard}>
         <RoutePoints
           editing={editing}
-          dispatch={dispatch}
           setEditing={setEditing}
           stationData={stationData}
           currentRoute={routeListItem}
         />
         <RouteMenu
           editing={editing}
-          dispatch={dispatch}
           setEditing={setEditing}
           routeListItem={routeListItem}
         />
@@ -104,13 +93,11 @@ function RoutePoints({
   editing,
   setEditing,
   stationData,
-  dispatch,
 }: {
   currentRoute: RouteListItemType;
   editing: boolean;
   setEditing: React.Dispatch<React.SetStateAction<boolean>>;
   stationData: RouteNameType[];
-  dispatch: React.Dispatch<RouteListReducerDispatch>;
 }): JSX.Element {
   const [newOrigin, setNewOrigin] = useState<RouteNameType>(
     currentRoute.origin
@@ -118,6 +105,7 @@ function RoutePoints({
   const [newDestination, setNewDestination] = useState<RouteNameType>(
     currentRoute.destination
   );
+  const dispatch = useContext(RoutesDispatchContext);
 
   function onChange(
     e: React.ChangeEvent<HTMLSelectElement>,
@@ -207,17 +195,16 @@ function RoutePoints({
 }
 
 function RouteMenu({
-  dispatch,
   routeListItem,
   editing,
   setEditing,
 }: {
-  dispatch: React.Dispatch<RouteListReducerDispatch>;
   routeListItem: RouteListItemType;
   editing: boolean;
   setEditing: React.Dispatch<React.SetStateAction<boolean>>;
 }): JSX.Element {
   const [open, setOpen] = useState<boolean>(false);
+  const dispatch = useContext(RoutesDispatchContext);
 
   useEffect(() => {
     const close = (e: KeyboardEvent) => {
