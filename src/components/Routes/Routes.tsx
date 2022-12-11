@@ -57,7 +57,6 @@ function RouteListItem({
   stationData: RouteNameType[];
 }): JSX.Element {
   const [editing, setEditing] = useState<boolean>(false);
-  const dispatch = useContext(RoutesDispatchContext);
 
   return (
     <li className={classes.routeListItem}>
