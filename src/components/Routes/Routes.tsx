@@ -254,14 +254,14 @@ function RouteMenu({
   function onEditHandler(e: React.MouseEvent<HTMLButtonElement>) {
     console.log("onEditHandler");
     setOpen(false);
-    setEditing(!editing);
+    setEditing((editing) => !editing);
   }
 
   return (
     <nav className={classes.routeMenuNav}>
       <button
         className={classes.routeMenuButton}
-        onClick={() => setOpen(!open)}
+        onClick={() => setOpen((open) => !open)}
         onBlur={onBlurHandler}
         onFocus={onFocusHandler}
         aria-haspopup="menu"
