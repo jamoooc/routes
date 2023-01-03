@@ -8,6 +8,9 @@ import type {
   RouteListItemType,
   RouteNameType,
   SideMenuStatus,
+  LineDataType,
+  StationDataType,
+  DirectionDataType,
 } from "../../types";
 
 export default function SideMenu({
@@ -89,11 +92,7 @@ export default function SideMenu({
           </div>
           <div className={classes.contentContainer}>
             {menuStatus === "addRoute" && (
-              <RouteForm
-                setMenuStatus={setMenuStatus}
-                stationData={stationData}
-                routes={routes}
-              />
+              <RouteForm setMenuStatus={setMenuStatus} routes={routes} />
             )}
             {menuStatus === "about" && (
               <p>
@@ -114,92 +113,192 @@ export default function SideMenu({
 }
 
 function RouteForm({
-  stationData,
   routes,
   setMenuStatus,
 }: {
-  stationData: RouteNameType[];
   routes: RouteListItemType[];
   setMenuStatus: React.Dispatch<React.SetStateAction<SideMenuStatus>>;
 }) {
-  if (!stationData.length) {
-    return <></>; // TODO: err
+  const dispatch = useContext(RoutesDispatchContext);
+
+  // available tube lines
+  const [lineData, setLineData] = useState<LineDataType[]>([]);
+  const [selectedLine, setSelectedLine] = useState<LineDataType["id"]>("");
+
+  // list of origin/destination pairs to get inbound/outbound parameter
+  const [directionData, setDirectionData] = useState<DirectionDataType[]>([]);
+  const [selectedDirection, setselectedDirection] =
+    useState<DirectionDataType["direction"]>("");
+
+  // ordered list of stations based on line direction
+  const [stationData, setStationData] = useState<StationDataType[]>([]);
+  const [selectedStation, setSelectedStation] =
+    useState<StationDataType["id"]>("");
+
+  useEffect(() => {
+    console.log("useEffect: lineData");
+    fetch("http://localhost:3000/lines")
+      .then(async (response) => {
+        const data = await response.json();
+        const lineData = data.map(({ id, name }: LineDataType) => ({
+          id,
+          name,
+        }));
+        setLineData(lineData);
+      })
+      .catch((e) => console.error(e));
+  }, []);
+
+  useEffect(() => {
+    console.log("useEffect: directionData");
+    if (!directionData.length) {
+      fetch("http://localhost:3000/routes")
+        .then(async (response) => {
+          const data = await response.json();
+          const directionData = data.map(
+            ({
+              name,
+              direction,
+              originator,
+              originationName,
+              destination,
+              destinationName,
+            }: DirectionDataType) => ({
+              name,
+              direction,
+              originator,
+              originationName,
+              destinationName,
+              destination,
+            })
+          );
+          setDirectionData(directionData);
+        })
+        .catch((e) => console.error(e));
+    }
+  }, [selectedLine]);
+
+  useEffect(() => {
+    console.log("useEffect: stationData");
+    if (!stationData.length) {
+      fetch("http://localhost:3000/route-stoppoints")
+        .then(async (response) => {
+          const data = await response.json();
+          const stationData = data.map(({ id, name }: StationDataType) => ({
+            id,
+            name,
+          }));
+          setStationData(stationData);
+        })
+        .catch((e) => console.error(e));
+    }
+  }, [selectedDirection]);
+
+  function onLineChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    console.log("onLineChange", e.target.value);
+    // clear selected route and station when a new line is selected
+    if (selectedLine && selectedLine !== e.target.value) {
+      if (selectedDirection) {
+        setselectedDirection("");
+      }
+      if (selectedStation) {
+        setSelectedStation("");
+      }
+    }
+    setSelectedLine(e.target.value);
   }
 
-  const dispatch = useContext(RoutesDispatchContext);
-  const [origin, setOrigin] = useState<RouteNameType>(stationData[0]);
-  const [destination, setDestination] = useState<RouteNameType>(stationData[0]);
-
-  function onChange(
-    e: React.ChangeEvent<HTMLSelectElement>,
-    setState: React.Dispatch<React.SetStateAction<RouteNameType>>
-  ) {
-    console.log("onChange");
-    const selectedStation = stationData.find(
-      (datum) => datum.naptanID === e.target.value
-    );
-    if (selectedStation) {
-      setState(selectedStation);
+  function onRouteChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    console.log("onRouteChange", e.target.value);
+    // clear selected station when a new route is selected
+    if (selectedDirection && selectedDirection !== e.target.value) {
+      if (selectedStation) {
+        setSelectedStation("");
+      }
     }
+    setselectedDirection(e.target.value);
+  }
+
+  function onDirectionChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    console.log("onDepartureChange", e.target.value);
+    setSelectedStation(e.target.value);
   }
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     console.log("onSubmit");
     e.preventDefault();
-    if (origin?.naptanID && destination?.naptanID) {
+    if (selectedLine && selectedDirection && selectedStation) {
+      console.log("onSubmit dispatch");
       dispatch({
         type: "add",
         route: {
-          id: routes.length + 1,
-          origin,
-          destination,
+          id: routes.length + 1, // TODO: use a unique ID
+          // TODO: workaround before origin/destination are removed from edit modal
+          origin: {} as RouteNameType,
+          destination: {} as RouteNameType,
+          selectedLine,
+          selectedDirection,
+          selectedStation,
         },
       });
       setMenuStatus("closed");
     }
+    console.log(selectedLine, selectedDirection, selectedStation);
   }
 
-  return (
-    <form onSubmit={onSubmit} className={classes.addRouteForm}>
-      <div>
-        <div className={classes.addRouteFormLabelContainer}>
-          <label htmlFor="origin">From: </label>
-        </div>
-        <select
-          key="origin"
-          id="origin"
-          defaultValue={stationData[0].naptanID}
-          onChange={(e) => onChange(e, setOrigin)}
-        >
-          {stationData.map((station: RouteNameType) => (
-            <option key={station.naptanID} value={station.naptanID}>
-              {station.commonName}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div>
-        <div className={classes.addRouteFormLabelContainer}>
-          <label htmlFor="destination" className="destination-label">
-            To:{" "}
-          </label>
-        </div>
-        <select
-          key="destination"
-          id="destination"
-          defaultValue={stationData[0].naptanID}
-          onChange={(e) => onChange(e, setDestination)}
-        >
-          {stationData.map((station: RouteNameType) => (
-            <option key={station.naptanID} value={station.naptanID}>
-              {station.commonName}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div className={classes.addRouteFormButtonContainer}>
-        <button type="submit">Submit</button>
-      </div>
-    </form>
-  );
+  if (!lineData.length) {
+    return <></>;
+  } else {
+    return (
+      <>
+        <form onSubmit={onSubmit} className={classes.addRouteForm}>
+          <div>
+            <div className={classes.addRouteFormLabelContainer}>
+              <label htmlFor="line">Service: </label>
+            </div>
+            <select key="line" id="line" onChange={onLineChange}>
+              <option>"Select line"</option>
+              {lineData.map((line: LineDataType) => (
+                <option key={line.id} value={line.id}>
+                  {line.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <div className={classes.addRouteFormLabelContainer}>
+              <label htmlFor="route">Direction: </label>
+            </div>
+            <select key="route" id="route" onChange={(e) => onRouteChange(e)}>
+              <option>"Select direction"</option>
+              {directionData.map((route: DirectionDataType) => (
+                <option
+                  key={`${route.originator}${route.destination}`}
+                  value={route.direction}
+                >
+                  {`${route.originationName} -> ${route.destinationName} (${route.direction})`}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <div className={classes.addRouteFormLabelContainer}>
+              <label htmlFor="departure">Departure station: </label>
+            </div>
+            <select key="departure" id="departure" onChange={onDirectionChange}>
+              <option>"Select departure station"</option>
+              {stationData.map((station: StationDataType) => (
+                <option key={station.id} value={station.id}>
+                  {station.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className={classes.addRouteFormButtonContainer}>
+            <button type="submit">Submit</button>
+          </div>
+        </form>
+      </>
+    );
+  }
 }

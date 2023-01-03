@@ -5,6 +5,9 @@ export type RouteNameType = {
 
 export type RouteListItemType = {
   id: number;
+  selectedLine: string;
+  selectedDirection: string;
+  selectedStation: string;
   origin: RouteNameType;
   destination: RouteNameType;
 };
@@ -19,3 +22,22 @@ export type RouteListReducerDispatch = {
 };
 
 export type SideMenuStatus = ("closed" | "addRoute" | "about");
+
+export type LineDataType = {
+  name: string;
+  id: string;
+};
+
+export type StationDataType = {
+  name: string;
+  id: string;
+};
+
+export type DirectionDataType = {
+  name: string;
+  direction: string;
+  originator: string;
+  originationName: string;
+  destination: string;
+  destinationName: string;
+};
