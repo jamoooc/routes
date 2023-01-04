@@ -8,6 +8,8 @@ import type {
   RouteNameType,
   RouteListItemType,
   RouteInformationType,
+  StationDataType,
+  DirectionDataType,
 } from "../../types";
 
 export default function Routes({
@@ -77,7 +79,7 @@ function RouteListItem({
         <RoutePoints
           editing={editing}
           setEditing={setEditing}
-          stationData={stationData}
+          // stationData={stationData}
           currentRoute={routeListItem}
         />
         <RouteMenu setEditing={setEditing} routeListItem={routeListItem} />
@@ -100,102 +102,102 @@ function RoutePoints({
   currentRoute,
   editing,
   setEditing,
-  stationData,
 }: {
   currentRoute: RouteListItemType;
   editing: boolean;
   setEditing: React.Dispatch<React.SetStateAction<boolean>>;
-  stationData: RouteNameType[];
 }): JSX.Element {
-  const [newOrigin, setNewOrigin] = useState<RouteNameType>(
-    currentRoute.origin
-  );
-  const [newDestination, setNewDestination] = useState<RouteNameType>(
-    currentRoute.destination
-  );
-  const dispatch = useContext(RoutesDispatchContext);
+  // const [newDirection, setNewDirection] = useState<
+  //   RouteListItemType["selectedDirection"]
+  // >(currentRoute.selectedDirection);
+  // const [newDepartureStation, setNewDepartureStation] = useState<
+  //   RouteListItemType["selectedStation"]
+  // >(currentRoute.selectedStation);
 
-  function onChange(
-    e: React.ChangeEvent<HTMLSelectElement>,
-    setState: React.Dispatch<React.SetStateAction<RouteNameType>>
-  ) {
-    console.log("called onChange");
-    const selectedStation = stationData.find(
-      (datum) => datum.naptanID === e.target.value
-    );
-    if (selectedStation) {
-      setState(selectedStation);
-    }
-  }
+  // const dispatch = useContext(RoutesDispatchContext);
 
-  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-    console.log("onSubmit");
-    e.preventDefault();
-    dispatch({
-      type: "update",
-      route: {
-        ...currentRoute,
-        origin: newOrigin,
-        destination: newDestination,
-      },
-    });
-    setEditing(false);
-  }
-  return editing ? (
-    <form className={classes.routePointsFormContainer} onSubmit={onSubmit}>
-      <div className={classes.routePointsLabelContainer}>
-        <label htmlFor="destination">To: </label>
-        <select
-          className={classes.routePointsSelect}
-          key="destination"
-          id="destination"
-          defaultValue={currentRoute.destination.naptanID}
-          onChange={(e) => onChange(e, setNewDestination)}
-        >
-          {stationData.map((station: RouteNameType) => (
-            <option key={station.naptanID} value={station.naptanID}>
-              {station.commonName}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div className={classes.routePointsLabelContainer}>
-        <label htmlFor="origin">From: </label>
-        <select
-          className={classes.routePointsSelect}
-          key="origin"
-          id="origin"
-          defaultValue={currentRoute.origin.naptanID}
-          onChange={(e) => onChange(e, setNewOrigin)}
-        >
-          {stationData.map((station: RouteNameType) => (
-            <option key={station.naptanID} value={station.naptanID}>
-              {station.commonName}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div className={classes.editFormButtonContainer}>
-        <button type="submit">
-          <div>Submit</div>
-        </button>
-        <button type="button" onClick={() => setEditing(false)}>
-          <div>Cancel</div>
-        </button>
-      </div>
-    </form>
-  ) : (
+  // function onChange(
+  //   e: React.ChangeEvent<HTMLSelectElement>,
+  //   setState: React.Dispatch<React.SetStateAction<RouteNameType>>
+  // ) {
+  //   console.log("called onChange");
+  //   const selectedStation = stationData.find(
+  //     (datum) => datum.naptanID === e.target.value
+  //   );
+  //   if (selectedStation) {
+  //     setState(selectedStation);
+  //   }
+  // }
+
+  // function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  //   console.log("onSubmit");
+  //   e.preventDefault();
+  //   dispatch({
+  //     type: "update",
+  //     route: {
+  //       ...currentRoute,
+  //       origin: newOrigin,
+  //       destination: newDestination,
+  //     },
+  //   });
+  //   setEditing(false);
+  // }
+  return (
+    // return editing ? (
+    //   <form className={classes.routePointsFormContainer} onSubmit={onSubmit}>
+    //     <div className={classes.routePointsLabelContainer}>
+    //       <label htmlFor="direction">Direction: </label>
+    //       <select
+    //         className={classes.routePointsSelect}
+    //         key="direction"
+    //         id="direction"
+    //         defaultValue={currentRoute.destination.naptanID}
+    //         onChange={(e) => onChange(e, setNewDestination)}
+    //       >
+    //         {stationData.map((station: RouteNameType) => (
+    //           <option key={station.naptanID} value={station.naptanID}>
+    //             {station.commonName}
+    //           </option>
+    //         ))}
+    //       </select>
+    //     </div>
+    //     <div className={classes.routePointsLabelContainer}>
+    //       <label htmlFor="origin">From: </label>
+    //       <select
+    //         className={classes.routePointsSelect}
+    //         key="origin"
+    //         id="origin"
+    //         defaultValue={currentRoute.origin.naptanID}
+    //         onChange={(e) => onChange(e, setNewOrigin)}
+    //       >
+    //         {stationData.map((station: RouteNameType) => (
+    //           <option key={station.naptanID} value={station.naptanID}>
+    //             {station.commonName}
+    //           </option>
+    //         ))}
+    //       </select>
+    //     </div>
+    //     <div className={classes.editFormButtonContainer}>
+    //       <button type="submit">
+    //         <div>Submit</div>
+    //       </button>
+    //       <button type="button" onClick={() => setEditing(false)}>
+    //         <div>Cancel</div>
+    //       </button>
+    //     </div>
+    //   </form>
+    // ) : (
     <div className={classes.routePointsContainer}>
       <p className={classes.routePointsDirection}>
-        To:{" "}
+        Route:{" "}
         <span className={classes.routePointsName}>
-          {currentRoute.destination.commonName}
+          {currentRoute.selectedDirection.name}
         </span>
       </p>
       <p className={classes.routePointsDirection}>
         From:{" "}
         <span className={classes.routePointsName}>
-          {currentRoute.origin.commonName}
+          {currentRoute.selectedStation}
         </span>
       </p>
     </div>

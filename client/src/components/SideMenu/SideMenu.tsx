@@ -127,8 +127,8 @@ function RouteForm({
 
   // list of origin/destination pairs to get inbound/outbound parameter
   const [directionData, setDirectionData] = useState<DirectionDataType[]>([]);
-  const [selectedDirection, setselectedDirection] =
-    useState<DirectionDataType["direction"]>("");
+  const [selectedDirection, setSelectedDirection] =
+    useState<DirectionDataType | null>(null);
 
   // ordered list of stations based on line direction
   const [stationData, setStationData] = useState<StationDataType[]>([]);
@@ -199,7 +199,7 @@ function RouteForm({
     // clear selected route and station when a new line is selected
     if (selectedLine && selectedLine !== e.target.value) {
       if (selectedDirection) {
-        setselectedDirection("");
+        setSelectedDirection(null);
       }
       if (selectedStation) {
         setSelectedStation("");
@@ -210,13 +210,23 @@ function RouteForm({
 
   function onRouteChange(e: React.ChangeEvent<HTMLSelectElement>) {
     console.log("onRouteChange", e.target.value);
-    // clear selected station when a new route is selected
-    if (selectedDirection && selectedDirection !== e.target.value) {
+
+    const newDirection = directionData.find(
+      (direction) => direction.name === e.target.value
+    );
+
+    if (!newDirection) {
+      console.error("Error: invalid direction data");
+      return;
+    }
+
+    // clear selected station when a new direction is selected
+    if (selectedDirection && selectedDirection.name !== newDirection.name) {
       if (selectedStation) {
         setSelectedStation("");
       }
     }
-    setselectedDirection(e.target.value);
+    setSelectedDirection(newDirection);
   }
 
   function onDirectionChange(e: React.ChangeEvent<HTMLSelectElement>) {
@@ -233,9 +243,6 @@ function RouteForm({
         type: "add",
         route: {
           id: routes.length + 1, // TODO: use a unique ID
-          // TODO: workaround before origin/destination are removed from edit modal
-          origin: {} as RouteNameType,
-          destination: {} as RouteNameType,
           selectedLine,
           selectedDirection,
           selectedStation,
@@ -274,7 +281,7 @@ function RouteForm({
               {directionData.map((route: DirectionDataType) => (
                 <option
                   key={`${route.originator}${route.destination}`}
-                  value={route.direction}
+                  value={route.name}
                 >
                   {`${route.originationName} -> ${route.destinationName} (${route.direction})`}
                 </option>
