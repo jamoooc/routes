@@ -133,7 +133,7 @@ function RouteForm({
   // ordered list of stations based on line direction
   const [stationData, setStationData] = useState<StationDataType[]>([]);
   const [selectedStation, setSelectedStation] =
-    useState<StationDataType["id"]>("");
+    useState<StationDataType | null>(null);
 
   useEffect(() => {
     console.log("useEffect: lineData");
@@ -209,7 +209,7 @@ function RouteForm({
         setSelectedDirection(null);
       }
       if (selectedStation) {
-        setSelectedStation("");
+        setSelectedStation(null);
       }
     }
     setSelectedLine(newLine);
@@ -230,7 +230,7 @@ function RouteForm({
     // clear selected station when a new direction is selected
     if (selectedDirection && selectedDirection.name !== newDirection.name) {
       if (selectedStation) {
-        setSelectedStation("");
+        setSelectedStation(null);
       }
     }
     setSelectedDirection(newDirection);
@@ -238,7 +238,15 @@ function RouteForm({
 
   function onStationChange(e: React.ChangeEvent<HTMLSelectElement>) {
     console.log("onDepartureChange", e.target.value);
-    setSelectedStation(e.target.value);
+
+    const station = stationData.find(
+      (station) => station.id === e.target.value
+    );
+    if (!station) {
+      console.error("Error: invalid station data");
+      return;
+    }
+    setSelectedStation(station);
   }
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {

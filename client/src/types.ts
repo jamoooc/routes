@@ -7,7 +7,7 @@ export type RouteListItemType = {
   id: number;
   selectedLine: LineDataType;
   selectedDirection: DirectionDataType;
-  selectedStation: string;
+  selectedStation: StationDataType;
 };
 
 export type RouteInformationType = {

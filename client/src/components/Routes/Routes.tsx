@@ -197,7 +197,7 @@ function RoutePoints({
       <p className={classes.routePointsDirection}>
         From:{" "}
         <span className={classes.routePointsName}>
-          {currentRoute.selectedStation}
+          {currentRoute.selectedStation.name}
         </span>
       </p>
     </div>
