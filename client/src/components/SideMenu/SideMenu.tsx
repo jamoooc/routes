@@ -123,7 +123,7 @@ function RouteForm({
 
   // available tube lines
   const [lineData, setLineData] = useState<LineDataType[]>([]);
-  const [selectedLine, setSelectedLine] = useState<LineDataType["id"]>("");
+  const [selectedLine, setSelectedLine] = useState<LineDataType | null>(null);
 
   // list of origin/destination pairs to get inbound/outbound parameter
   const [directionData, setDirectionData] = useState<DirectionDataType[]>([]);
@@ -196,8 +196,15 @@ function RouteForm({
 
   function onLineChange(e: React.ChangeEvent<HTMLSelectElement>) {
     console.log("onLineChange", e.target.value);
+
+    const newLine = lineData.find((line) => line.id === e.target.value);
+    if (!newLine) {
+      console.error("Error: invalid direction data");
+      return;
+    }
+
     // clear selected route and station when a new line is selected
-    if (selectedLine && selectedLine !== e.target.value) {
+    if (selectedLine && selectedLine.id !== newLine.id) {
       if (selectedDirection) {
         setSelectedDirection(null);
       }
@@ -205,7 +212,7 @@ function RouteForm({
         setSelectedStation("");
       }
     }
-    setSelectedLine(e.target.value);
+    setSelectedLine(newLine);
   }
 
   function onRouteChange(e: React.ChangeEvent<HTMLSelectElement>) {

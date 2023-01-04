@@ -5,7 +5,7 @@ export type RouteNameType = {
 
 export type RouteListItemType = {
   id: number;
-  selectedLine: string;
+  selectedLine: LineDataType;
   selectedDirection: DirectionDataType;
   selectedStation: string;
 };
