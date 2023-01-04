@@ -227,6 +227,7 @@ function RoutePoints({
           key="direction"
           id="direction"
           onChange={(e) => onRouteChange(e)}
+          defaultValue={currentRoute.selectedDirection.name}
         >
           <option>"Select direction"</option>
           {directionData.map((route: DirectionDataType) => (
@@ -246,6 +247,7 @@ function RoutePoints({
           key="departure"
           id="departure"
           onChange={onStationChange}
+          defaultValue={currentRoute.selectedStation.id}
         >
           <option>"Select departure station"</option>
           {stationData.map((station: StationDataType) => (
