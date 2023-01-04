@@ -107,86 +107,164 @@ function RoutePoints({
   editing: boolean;
   setEditing: React.Dispatch<React.SetStateAction<boolean>>;
 }): JSX.Element {
-  // const [newDirection, setNewDirection] = useState<
-  //   RouteListItemType["selectedDirection"]
-  // >(currentRoute.selectedDirection);
-  // const [newDepartureStation, setNewDepartureStation] = useState<
-  //   RouteListItemType["selectedStation"]
-  // >(currentRoute.selectedStation);
+  // list of origin/destination pairs to get inbound/outbound parameter
+  const [directionData, setDirectionData] = useState<DirectionDataType[]>([]);
+  const [selectedDirection, setSelectedDirection] =
+    useState<DirectionDataType | null>(null);
 
-  // const dispatch = useContext(RoutesDispatchContext);
+  // ordered list of stations based on line direction
+  const [stationData, setStationData] = useState<StationDataType[]>([]);
+  const [selectedStation, setSelectedStation] =
+    useState<StationDataType | null>(null);
 
-  // function onChange(
-  //   e: React.ChangeEvent<HTMLSelectElement>,
-  //   setState: React.Dispatch<React.SetStateAction<RouteNameType>>
-  // ) {
-  //   console.log("called onChange");
-  //   const selectedStation = stationData.find(
-  //     (datum) => datum.naptanID === e.target.value
-  //   );
-  //   if (selectedStation) {
-  //     setState(selectedStation);
-  //   }
-  // }
+  const dispatch = useContext(RoutesDispatchContext);
 
-  // function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-  //   console.log("onSubmit");
-  //   e.preventDefault();
-  //   dispatch({
-  //     type: "update",
-  //     route: {
-  //       ...currentRoute,
-  //       origin: newOrigin,
-  //       destination: newDestination,
-  //     },
-  //   });
-  //   setEditing(false);
-  // }
-  return (
-    // return editing ? (
-    //   <form className={classes.routePointsFormContainer} onSubmit={onSubmit}>
-    //     <div className={classes.routePointsLabelContainer}>
-    //       <label htmlFor="direction">Direction: </label>
-    //       <select
-    //         className={classes.routePointsSelect}
-    //         key="direction"
-    //         id="direction"
-    //         defaultValue={currentRoute.destination.naptanID}
-    //         onChange={(e) => onChange(e, setNewDestination)}
-    //       >
-    //         {stationData.map((station: RouteNameType) => (
-    //           <option key={station.naptanID} value={station.naptanID}>
-    //             {station.commonName}
-    //           </option>
-    //         ))}
-    //       </select>
-    //     </div>
-    //     <div className={classes.routePointsLabelContainer}>
-    //       <label htmlFor="origin">From: </label>
-    //       <select
-    //         className={classes.routePointsSelect}
-    //         key="origin"
-    //         id="origin"
-    //         defaultValue={currentRoute.origin.naptanID}
-    //         onChange={(e) => onChange(e, setNewOrigin)}
-    //       >
-    //         {stationData.map((station: RouteNameType) => (
-    //           <option key={station.naptanID} value={station.naptanID}>
-    //             {station.commonName}
-    //           </option>
-    //         ))}
-    //       </select>
-    //     </div>
-    //     <div className={classes.editFormButtonContainer}>
-    //       <button type="submit">
-    //         <div>Submit</div>
-    //       </button>
-    //       <button type="button" onClick={() => setEditing(false)}>
-    //         <div>Cancel</div>
-    //       </button>
-    //     </div>
-    //   </form>
-    // ) : (
+  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    console.log("onSubmit");
+    e.preventDefault();
+
+    if (selectedDirection && selectedStation) {
+      dispatch({
+        type: "update",
+        route: {
+          ...currentRoute,
+          selectedDirection,
+          selectedStation,
+        },
+      });
+    } else {
+      console.log("Error: invalid parameters");
+      return;
+    }
+    setEditing(false);
+  }
+
+  useEffect(() => {
+    console.log("useEffect: directionData");
+    if (!directionData.length) {
+      fetch("http://localhost:3000/routes")
+        .then(async (response) => {
+          const data = await response.json();
+          const directionData = data.map(
+            ({
+              name,
+              direction,
+              originator,
+              originationName,
+              destination,
+              destinationName,
+            }: DirectionDataType) => ({
+              name,
+              direction,
+              originator,
+              originationName,
+              destinationName,
+              destination,
+            })
+          );
+          setDirectionData(directionData);
+        })
+        .catch((e) => console.error(e));
+    }
+  }, [editing]);
+
+  useEffect(() => {
+    console.log("useEffect: stationData");
+    if (!stationData.length) {
+      fetch("http://localhost:3000/route-stoppoints")
+        .then(async (response) => {
+          const data = await response.json();
+          const stationData = data.map(({ id, name }: StationDataType) => ({
+            id,
+            name,
+          }));
+          setStationData(stationData);
+        })
+        .catch((e) => console.error(e));
+    }
+  }, [selectedDirection]);
+
+  function onRouteChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    console.log("onRouteChange", e.target.value);
+
+    const newDirection = directionData.find(
+      (direction) => direction.name === e.target.value
+    );
+
+    if (!newDirection) {
+      console.error("Error: invalid direction data");
+      return;
+    }
+
+    // clear selected station when a new direction is selected
+    if (selectedDirection && selectedDirection.name !== newDirection.name) {
+      if (selectedStation) {
+        setSelectedStation(null);
+      }
+    }
+    setSelectedDirection(newDirection);
+  }
+
+  function onStationChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    console.log("onDepartureChange", e.target.value);
+
+    const station = stationData.find(
+      (station) => station.id === e.target.value
+    );
+    if (!station) {
+      console.error("Error: invalid station data");
+      return;
+    }
+    setSelectedStation(station);
+  }
+
+  return editing ? (
+    <form className={classes.routePointsFormContainer} onSubmit={onSubmit}>
+      <div className={classes.routePointsLabelContainer}>
+        <label htmlFor="direction">Route: </label>
+        <select
+          className={classes.routePointsSelect}
+          key="direction"
+          id="direction"
+          onChange={(e) => onRouteChange(e)}
+        >
+          <option>"Select direction"</option>
+          {directionData.map((route: DirectionDataType) => (
+            <option
+              key={`${route.originator}${route.destination}`}
+              value={route.name}
+            >
+              {`${route.originationName} -> ${route.destinationName} (${route.direction})`}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className={classes.routePointsLabelContainer}>
+        <label htmlFor="departure">From: </label>
+        <select
+          className={classes.routePointsSelect}
+          key="departure"
+          id="departure"
+          onChange={onStationChange}
+        >
+          <option>"Select departure station"</option>
+          {stationData.map((station: StationDataType) => (
+            <option key={station.id} value={station.id}>
+              {station.name}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className={classes.editFormButtonContainer}>
+        <button type="submit">
+          <div>Submit</div>
+        </button>
+        <button type="button" onClick={() => setEditing(false)}>
+          <div>Cancel</div>
+        </button>
+      </div>
+    </form>
+  ) : (
     <div className={classes.routePointsContainer}>
       <p className={classes.routePointsDirection}>
         Route:{" "}
