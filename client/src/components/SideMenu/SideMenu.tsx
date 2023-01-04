@@ -236,7 +236,7 @@ function RouteForm({
     setSelectedDirection(newDirection);
   }
 
-  function onDirectionChange(e: React.ChangeEvent<HTMLSelectElement>) {
+  function onStationChange(e: React.ChangeEvent<HTMLSelectElement>) {
     console.log("onDepartureChange", e.target.value);
     setSelectedStation(e.target.value);
   }
@@ -299,7 +299,7 @@ function RouteForm({
             <div className={classes.addRouteFormLabelContainer}>
               <label htmlFor="departure">Departure station: </label>
             </div>
-            <select key="departure" id="departure" onChange={onDirectionChange}>
+            <select key="departure" id="departure" onChange={onStationChange}>
               <option>"Select departure station"</option>
               {stationData.map((station: StationDataType) => (
                 <option key={station.id} value={station.id}>
