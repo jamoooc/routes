@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import {
   RoutesContext,
   RoutesDispatchContext,
@@ -247,7 +247,6 @@ function RoutePoints({
           key="departure"
           id="departure"
           onChange={onStationChange}
-          defaultValue={currentRoute.selectedStation.id}
         >
           <option>"Select departure station"</option>
           {stationData.map((station: StationDataType) => (
