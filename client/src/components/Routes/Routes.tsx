@@ -110,12 +110,12 @@ function RoutePoints({
   // list of origin/destination pairs to get inbound/outbound parameter
   const [directionData, setDirectionData] = useState<DirectionDataType[]>([]);
   const [selectedDirection, setSelectedDirection] =
-    useState<DirectionDataType | null>(null);
+    useState<DirectionDataType | null>(currentRoute.selectedDirection);
 
   // ordered list of stations based on line direction
   const [stationData, setStationData] = useState<StationDataType[]>([]);
   const [selectedStation, setSelectedStation] =
-    useState<StationDataType | null>(null);
+    useState<StationDataType | null>(currentRoute.selectedStation);
 
   const dispatch = useContext(RoutesDispatchContext);
 
@@ -124,14 +124,20 @@ function RoutePoints({
     e.preventDefault();
 
     if (selectedDirection && selectedStation) {
-      dispatch({
-        type: "update",
-        route: {
-          ...currentRoute,
-          selectedDirection,
-          selectedStation,
-        },
-      });
+      if (
+        // only update if the values have changed
+        selectedDirection !== currentRoute.selectedDirection ||
+        selectedStation !== currentRoute.selectedStation
+      ) {
+        dispatch({
+          type: "update",
+          route: {
+            ...currentRoute,
+            selectedDirection,
+            selectedStation,
+          },
+        });
+      }
     } else {
       console.log("Error: invalid parameters");
       return;
@@ -257,7 +263,7 @@ function RoutePoints({
         </select>
       </div>
       <div className={classes.editFormButtonContainer}>
-        <button type="submit">
+        <button type="submit" onClick={() => console.log("click")}>
           <div>Submit</div>
         </button>
         <button type="button" onClick={() => setEditing(false)}>
