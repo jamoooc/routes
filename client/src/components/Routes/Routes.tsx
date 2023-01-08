@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState, useRef } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import {
   RoutesContext,
   RoutesDispatchContext,
@@ -144,6 +144,18 @@ function RoutePoints({
     }
     setEditing(false);
   }
+
+  // close the edit menu on `Escape` keypress
+  useEffect(() => {
+    const close = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && editing) {
+        e.preventDefault(); // prevent exiting full screen
+        setEditing(false);
+      }
+    };
+    document.addEventListener("keydown", close);
+    return () => document.removeEventListener("keydown", close);
+  }, [editing]);
 
   useEffect(() => {
     console.log("useEffect: directionData");
