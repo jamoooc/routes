@@ -118,6 +118,14 @@ function RoutePoints({
     useState<StationDataType | null>(currentRoute.selectedStation);
 
   const dispatch = useContext(RoutesDispatchContext);
+  const selectDirectionRef = useRef<HTMLSelectElement>(null);
+
+  // move focus to first select element on edit
+  useEffect(() => {
+    if (selectDirectionRef.current && editing) {
+      selectDirectionRef.current.focus();
+    }
+  }, [editing]);
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     console.log("onSubmit");
@@ -246,6 +254,7 @@ function RoutePoints({
           id="direction"
           onChange={(e) => onRouteChange(e)}
           defaultValue={currentRoute.selectedDirection.name}
+          ref={selectDirectionRef}
         >
           {directionData.map((route: DirectionDataType) => (
             <option
