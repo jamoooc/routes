@@ -254,7 +254,9 @@ function RoutePoints({
           id="departure"
           onChange={onStationChange}
         >
-          <option>"Select departure station"</option>
+          <option disabled={true} selected={true}>
+            "Select departure station"
+          </option>
           {stationData.map((station: StationDataType) => (
             <option key={station.id} value={station.id}>
               {station.name}
