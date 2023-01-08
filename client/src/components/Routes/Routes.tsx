@@ -247,11 +247,11 @@ function RoutePoints({
           onChange={(e) => onRouteChange(e)}
           defaultValue={currentRoute.selectedDirection.name}
         >
-          <option>"Select direction"</option>
           {directionData.map((route: DirectionDataType) => (
             <option
               key={`${route.originator}${route.destination}`}
               value={route.name}
+              disabled={route.name === currentRoute.selectedDirection.name}
             >
               {`${route.originationName} -> ${route.destinationName} (${route.direction})`}
             </option>
@@ -265,12 +265,14 @@ function RoutePoints({
           key="departure"
           id="departure"
           onChange={onStationChange}
+          defaultValue={currentRoute.selectedStation.id}
         >
-          <option disabled={true} selected={true}>
-            "Select departure station"
-          </option>
           {stationData.map((station: StationDataType) => (
-            <option key={station.id} value={station.id}>
+            <option
+              key={station.id}
+              value={station.id}
+              disabled={station.id === currentRoute.selectedStation.id}
+            >
               {station.name}
             </option>
           ))}
