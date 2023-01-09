@@ -137,16 +137,18 @@ function RouteForm({
 
   useEffect(() => {
     console.log("useEffect: lineData");
-    fetch("http://localhost:3000/lines")
-      .then(async (response) => {
-        const data = await response.json();
-        const lineData = data.map(({ id, name }: LineDataType) => ({
-          id,
-          name,
-        }));
-        setLineData(lineData);
-      })
-      .catch((e) => console.error(e));
+    if (!lineData.length) {
+      fetch("http://localhost:3000/lines")
+        .then(async (response) => {
+          const data = await response.json();
+          const lineData = data.map(({ id, name }: LineDataType) => ({
+            id,
+            name,
+          }));
+          setLineData(lineData);
+        })
+        .catch((e) => console.error(e));
+    }
   }, []);
 
   useEffect(() => {
