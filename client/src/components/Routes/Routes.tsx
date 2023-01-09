@@ -10,6 +10,7 @@ import type {
   RouteInformationType,
   StationDataType,
   DirectionDataType,
+  DepartureTimeType,
 } from "../../types";
 
 export default function Routes({
@@ -79,20 +80,10 @@ function RouteListItem({
         <RoutePoints
           editing={editing}
           setEditing={setEditing}
-          // stationData={stationData}
           currentRoute={routeListItem}
         />
         <RouteMenu setEditing={setEditing} routeListItem={routeListItem} />
-        <RouteDepartureTimes
-          editing={editing}
-          routeInformation={{
-            departureTimes: [
-              new Date().toLocaleTimeString(),
-              new Date().toLocaleTimeString(),
-              new Date().toLocaleTimeString(),
-            ],
-          }}
-        />
+        <RouteDepartureTimes editing={editing} currentRoute={routeListItem} />
       </div>
     </li>
   );
@@ -457,11 +448,35 @@ function RouteMenu({
 
 function RouteDepartureTimes({
   editing,
-  routeInformation,
+  currentRoute,
 }: {
   editing: boolean;
-  routeInformation: RouteInformationType;
+  currentRoute: RouteListItemType;
 }): JSX.Element {
+  const [directionData, setDirectionData] = useState<DepartureTimeType[]>([]);
+
+  const departureNaptanID = currentRoute.selectedStation.id;
+  const direction = currentRoute.selectedDirection.direction;
+
+  useEffect(() => {
+    console.log("useEffect: departureData");
+    fetch(
+      `http://localhost:3000/departures?departureNaptanID=${departureNaptanID}&direction=${direction}`
+    )
+      .then(async (response) => {
+        const data = await response.json();
+        console.log("DATA", data);
+        setDirectionData(data);
+      })
+      .catch((e) => console.error(e));
+  }, [currentRoute]);
+
+  const dateTimeFormatOptions: Intl.DateTimeFormatOptions = {
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+  };
+
   return (
     <div className={classes.routeDepartureTimeContainer}>
       <h4 className={classes.routeDepartureTimeTitle}>Departures:</h4>
@@ -472,13 +487,22 @@ function RouteDepartureTimes({
           (editing === true ? classes.routeDepartureBg : "")
         }
       >
-        {!routeInformation.departureTimes.length
+        {!directionData.length
           ? "No departures found"
-          : routeInformation.departureTimes.map((departureTime, idx) => (
-              <li key={idx} className={classes.routeDepartureTimeItem}>
-                {departureTime}
-              </li>
-            ))}
+          : directionData.map(
+              ({ expectedArrival, towards }: DepartureTimeType) => (
+                <li
+                  key={expectedArrival}
+                  className={classes.routeDepartureTimeItem}
+                >
+                  {new Intl.DateTimeFormat(
+                    "en-GB",
+                    dateTimeFormatOptions
+                  ).format(new Date(expectedArrival))}{" "}
+                  to {towards}
+                </li>
+              )
+            )}
       </ul>
     </div>
   );

@@ -39,3 +39,11 @@ export type DirectionDataType = {
   destination: string;
   destinationName: string;
 };
+
+export type DepartureTimeType = {
+  direction: string;
+  destinationNaptanId: string;
+  destinationName: string;
+  expectedArrival: string;
+  towards: string;
+};
