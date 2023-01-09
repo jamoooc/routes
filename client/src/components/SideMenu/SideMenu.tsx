@@ -181,8 +181,19 @@ function RouteForm({
 
   useEffect(() => {
     console.log("useEffect: stationData");
+
+    const lineID = selectedLine?.id;
+    const direction = selectedDirection?.direction;
+
+    if (!lineID || !direction) {
+      console.error("Invalid lineID or direction", lineID, direction);
+      return;
+    }
+
     if (!stationData.length) {
-      fetch("http://localhost:3000/route-stoppoints")
+      fetch(
+        `http://localhost:3000/route-stoppoints?lineID=${lineID}&direction=${direction}`
+      )
         .then(async (response) => {
           const data = await response.json();
           const stationData = data.map(({ id, name }: StationDataType) => ({
