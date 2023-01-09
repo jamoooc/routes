@@ -154,7 +154,7 @@ function RouteForm({
   useEffect(() => {
     console.log("useEffect: directionData");
     const lineID = selectedLine?.id;
-    if (!directionData.length && lineID) {
+    if (lineID) {
       fetch(`http://localhost:3000/routes?lineID=${lineID}`)
         .then(async (response) => {
           const data = await response.json();
@@ -178,6 +178,9 @@ function RouteForm({
           setDirectionData(directionData);
         })
         .catch((e) => console.error(e));
+    } else {
+      console.log("Invalid lineID or direction", lineID);
+      return;
     }
   }, [selectedLine]);
 
@@ -187,12 +190,7 @@ function RouteForm({
     const lineID = selectedLine?.id;
     const direction = selectedDirection?.direction;
 
-    if (!lineID || !direction) {
-      console.error("Invalid lineID or direction", lineID, direction);
-      return;
-    }
-
-    if (!stationData.length) {
+    if (lineID && direction) {
       fetch(
         `http://localhost:3000/route-stoppoints?lineID=${lineID}&direction=${direction}`
       )
@@ -205,6 +203,9 @@ function RouteForm({
           setStationData(stationData);
         })
         .catch((e) => console.error(e));
+    } else {
+      console.log("Invalid lineID or direction", lineID, direction);
+      return;
     }
   }, [selectedDirection]);
 
