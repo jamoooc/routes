@@ -191,6 +191,11 @@ function RouteForm({
     const direction = selectedDirection?.direction;
 
     if (lineID && direction) {
+      if (stationData.length) {
+        // clear existing station data, this will remove any previously selected station
+        console.log("clearing existing station data");
+        setStationData([]);
+      }
       fetch(
         `http://localhost:3000/route-stoppoints?lineID=${lineID}&direction=${direction}`
       )
