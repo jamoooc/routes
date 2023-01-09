@@ -151,8 +151,9 @@ function RouteForm({
 
   useEffect(() => {
     console.log("useEffect: directionData");
-    if (!directionData.length) {
-      fetch("http://localhost:3000/routes")
+    const lineID = selectedLine?.id;
+    if (!directionData.length && lineID) {
+      fetch(`http://localhost:3000/routes?lineID=${lineID}`)
         .then(async (response) => {
           const data = await response.json();
           const directionData = data.map(
