@@ -244,8 +244,26 @@ function RoutePoints({
     setSelectedStation(station);
   }
 
+  let timeoutID: NodeJS.Timeout;
+  function onBlurHandler() {
+    console.log("onBlurHandler");
+    timeoutID = setTimeout(() => {
+      setEditing(false);
+    });
+  }
+
+  function onFocusHandler() {
+    console.log("onFocusHandler");
+    clearTimeout(timeoutID);
+  }
+
   return editing ? (
-    <form className={classes.routePointsFormContainer} onSubmit={onSubmit}>
+    <form
+      className={classes.routePointsFormContainer}
+      onSubmit={onSubmit}
+      onBlur={onBlurHandler}
+      onFocus={onFocusHandler}
+    >
       <div className={classes.routePointsLabelContainer}>
         <label htmlFor="direction">Route: </label>
         <select
