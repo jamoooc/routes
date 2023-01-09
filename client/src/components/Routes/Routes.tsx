@@ -167,8 +167,10 @@ function RoutePoints({
 
   useEffect(() => {
     console.log("useEffect: directionData");
-    if (!directionData.length) {
-      fetch("http://localhost:3000/routes")
+
+    const lineID = currentRoute.selectedLine.id;
+    if (lineID) {
+      fetch(`http://localhost:3000/routes?lineID=${lineID}`)
         .then(async (response) => {
           const data = await response.json();
           const directionData = data.map(
@@ -196,8 +198,19 @@ function RoutePoints({
 
   useEffect(() => {
     console.log("useEffect: stationData");
-    if (!stationData.length) {
-      fetch("http://localhost:3000/route-stoppoints")
+
+    const lineID = currentRoute.selectedLine.id;
+    const direction = selectedDirection?.direction;
+
+    if (lineID && direction) {
+      if (stationData.length) {
+        // clear existing station data, this will remove any previously selected station
+        console.log("clearing existing station data");
+        setStationData([]);
+      }
+      fetch(
+        `http://localhost:3000/route-stoppoints?lineID=${lineID}&direction=${direction}`
+      )
         .then(async (response) => {
           const data = await response.json();
           const stationData = data.map(({ id, name }: StationDataType) => ({
@@ -207,6 +220,9 @@ function RoutePoints({
           setStationData(stationData);
         })
         .catch((e) => console.error(e));
+    } else {
+      console.log("Invalid lineID or direction", lineID, direction);
+      return;
     }
   }, [selectedDirection]);
 
@@ -278,7 +294,10 @@ function RoutePoints({
             <option
               key={`${route.originator}${route.destination}`}
               value={route.name}
-              disabled={route.name === currentRoute.selectedDirection.name}
+              disabled={
+                route.name === currentRoute.selectedDirection.name &&
+                route.direction === currentRoute.selectedDirection.direction
+              }
             >
               {`${route.originationName} -> ${route.destinationName} (${route.direction})`}
             </option>
@@ -298,7 +317,10 @@ function RoutePoints({
             <option
               key={station.id}
               value={station.id}
-              disabled={station.id === currentRoute.selectedStation.id}
+              disabled={
+                station.id === currentRoute.selectedStation.id &&
+                selectedDirection?.name === currentRoute.selectedDirection.name
+              }
             >
               {station.name}
             </option>
