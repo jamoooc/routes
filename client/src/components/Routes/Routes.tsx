@@ -264,85 +264,113 @@ function RoutePoints({
     clearTimeout(timeoutID);
   }
 
-  return editing ? (
-    <form
-      className={classes.routePointsFormContainer}
-      onSubmit={onSubmit}
-      onBlur={onBlurHandler}
-      onFocus={onFocusHandler}
-    >
-      <div className={classes.routePointsLabelContainer}>
-        <label htmlFor="direction">Route: </label>
-        <select
-          className={classes.routePointsSelect}
-          key="direction"
-          id="direction"
-          onChange={(e) => onRouteChange(e)}
-          defaultValue={currentRoute.selectedDirection.name}
-          ref={selectDirectionRef}
-        >
-          {directionData.map((route: DirectionDataType) => (
-            <option
-              key={`${route.originator}${route.destination}`}
-              value={route.name}
-              disabled={
-                route.name === currentRoute.selectedDirection.name &&
-                route.direction === currentRoute.selectedDirection.direction
-              }
+  if (editing) {
+    return (
+      <form
+        className={classes.routePointsFormContainer}
+        onSubmit={onSubmit}
+        onBlur={onBlurHandler}
+        onFocus={onFocusHandler}
+      >
+        <div className={classes.routePointsLabelContainer}>
+          <label htmlFor="direction">Route: </label>
+          <select
+            className={classes.routePointsSelect}
+            key="direction"
+            id="direction"
+            onChange={(e) => onRouteChange(e)}
+            defaultValue={currentRoute.selectedDirection.name}
+            ref={selectDirectionRef}
+          >
+            {directionData.map((route: DirectionDataType) => (
+              <option
+                key={`${route.originator}${route.destination}`}
+                value={route.name}
+                disabled={
+                  route.name === currentRoute.selectedDirection.name &&
+                  route.direction === currentRoute.selectedDirection.direction
+                }
+              >
+                {`${route.originationName
+                  .replace(/Underground Station/g, "")
+                  .trim()} to ${route.destinationName
+                  .replace(/Underground Station/g, "")
+                  .trim()} (${route.direction})`}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className={classes.routePointsLabelContainer}>
+          <label htmlFor="departure">From: </label>
+          <select
+            className={classes.routePointsSelect}
+            key="departure"
+            id="departure"
+            onChange={onStationChange}
+            defaultValue={currentRoute.selectedStation.id}
+          >
+            {stationData.map((station: StationDataType) => (
+              <option
+                key={station.id}
+                value={station.id}
+                disabled={
+                  station.id === currentRoute.selectedStation.id &&
+                  selectedDirection?.name ===
+                    currentRoute.selectedDirection.name
+                }
+              >
+                {station.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className={classes.editFormButtonContainer}>
+          <button type="submit" onClick={() => console.log("click")}>
+            <div>Submit</div>
+          </button>
+          <button type="button" onClick={() => setEditing(false)}>
+            <div>Cancel</div>
+          </button>
+        </div>
+      </form>
+    );
+  } else {
+    const [origin, destination] = currentRoute.selectedDirection.name
+      .split(" - ")
+      .map((station) => station.replace(/Underground Station/g, "").trim());
+
+    return (
+      <div className={classes.routePointsContainer}>
+        <p className={classes.routePointsDirection}>
+          Route:{" "}
+          <span className={classes.routePointsName}>
+            {origin}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              stroke="currentColor"
+              className={classes.arrowSVG}
             >
-              {`${route.originationName} -> ${route.destinationName} (${route.direction})`}
-            </option>
-          ))}
-        </select>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
+              />
+            </svg>
+            {destination}
+          </span>
+        </p>
+        <p className={classes.routePointsDirection}>
+          From:{" "}
+          <span className={classes.routePointsName}>
+            {currentRoute.selectedStation.name}
+          </span>
+        </p>
       </div>
-      <div className={classes.routePointsLabelContainer}>
-        <label htmlFor="departure">From: </label>
-        <select
-          className={classes.routePointsSelect}
-          key="departure"
-          id="departure"
-          onChange={onStationChange}
-          defaultValue={currentRoute.selectedStation.id}
-        >
-          {stationData.map((station: StationDataType) => (
-            <option
-              key={station.id}
-              value={station.id}
-              disabled={
-                station.id === currentRoute.selectedStation.id &&
-                selectedDirection?.name === currentRoute.selectedDirection.name
-              }
-            >
-              {station.name}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div className={classes.editFormButtonContainer}>
-        <button type="submit" onClick={() => console.log("click")}>
-          <div>Submit</div>
-        </button>
-        <button type="button" onClick={() => setEditing(false)}>
-          <div>Cancel</div>
-        </button>
-      </div>
-    </form>
-  ) : (
-    <div className={classes.routePointsContainer}>
-      <p className={classes.routePointsDirection}>
-        Route:{" "}
-        <span className={classes.routePointsName}>
-          {currentRoute.selectedDirection.name}
-        </span>
-      </p>
-      <p className={classes.routePointsDirection}>
-        From:{" "}
-        <span className={classes.routePointsName}>
-          {currentRoute.selectedStation.name}
-        </span>
-      </p>
-    </div>
-  );
+    );
+  }
 }
 
 function RouteMenu({
