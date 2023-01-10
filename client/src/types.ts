@@ -45,5 +45,6 @@ export type DepartureTimeType = {
   destinationNaptanId: string;
   destinationName: string;
   expectedArrival: string;
+  timeToStation: number;
   towards: string;
 };

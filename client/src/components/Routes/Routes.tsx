@@ -490,17 +490,24 @@ function RouteDepartureTimes({
         {!directionData.length
           ? "No departures found"
           : directionData.map(
-              ({ expectedArrival, towards }: DepartureTimeType) => (
-                <li
-                  key={expectedArrival}
-                  className={classes.routeDepartureTimeItem}
-                >
-                  {new Intl.DateTimeFormat(
-                    "en-GB",
-                    dateTimeFormatOptions
-                  ).format(new Date(expectedArrival))}{" "}
-                  to {towards}
-                </li>
+              ({
+                expectedArrival,
+                timeToStation,
+                towards,
+              }: DepartureTimeType) => (
+                <div className={classes.routeDepartureTimeItem}>
+                  <li key={expectedArrival + timeToStation}>
+                    {towards} (
+                    {new Intl.DateTimeFormat(
+                      "en-GB",
+                      dateTimeFormatOptions
+                    ).format(new Date(expectedArrival))}
+                    )
+                  </li>
+                  <div className={classes.routeDepartureTimeMinutes}>
+                    {Math.floor(timeToStation / 60)}m
+                  </div>
+                </div>
               )
             )}
       </ul>
