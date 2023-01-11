@@ -10,10 +10,6 @@ export type RouteListItemType = {
   selectedStation: StationDataType;
 };
 
-export type RouteInformationType = {
-  departureTimes: string[]; // timestamp
-};
-
 export type RouteListReducerDispatch = {
   type: string;
   route: RouteListItemType;

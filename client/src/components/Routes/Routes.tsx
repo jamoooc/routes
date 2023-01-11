@@ -7,7 +7,6 @@ import classes from "./routes.module.css";
 import type {
   RouteNameType,
   RouteListItemType,
-  RouteInformationType,
   StationDataType,
   DirectionDataType,
   DepartureTimeType,
