@@ -138,7 +138,7 @@ function RouteForm({
   useEffect(() => {
     console.log("useEffect: lineData");
     if (!lineData.length) {
-      fetch("http://localhost:3000/lines")
+      fetch("http://localhost:3000/lines?mode=tube")
         .then(async (response) => {
           const data = await response.json();
           const lineData = data.map(({ id, name }: LineDataType) => ({
