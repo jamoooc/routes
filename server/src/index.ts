@@ -1,6 +1,7 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import fetchData from './utils/fetchData';
 import type {
   TubeLineType,
   RouteSectionType,
@@ -21,23 +22,6 @@ const init: RequestInit = {
     api_key: process.env.TFL_API_KEY || ""
   }
 }
-
-// utility fetch wrapper
-
-async function fetchData<T>(url: string, init?: RequestInit): Promise<T> {
-  return await fetch(url, init)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(response.statusText);
-      }
-      return response.json() as Promise<T>
-    })
-    .then((data) => data)
-    .catch((e) => {
-      throw e;
-    });
-}
-
 
 // get line name and IDs for the given mode
 app.get('/lines', async (req: Request, res: Response) => {
