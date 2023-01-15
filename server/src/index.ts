@@ -1,6 +1,12 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import type {
+  TubeLineType,
+  RouteSectionType,
+  RouteStopPointType,
+  DepartureTimeType
+} from './types';
 
 dotenv.config();
 
@@ -15,50 +21,6 @@ const init: RequestInit = {
     api_key: process.env.TFL_API_KEY || ""
   }
 }
-
-type TubeLineType = {
-  id: 'string',
-  name: 'string',
-}
-
-type RouteDirectionType = ('inbound' | 'outbound');
-
-type RouteSectionType = {
-  name: string;
-  direction: RouteDirectionType;
-  originationName: string;
-  destinationName: string;
-  originator: string;
-  destination: string;
-  serviceType: string;
-  validTo: string,
-  validFrom: string
-};
-
-type OrderedLineRouteType = {
-  name: string;
-  naptanIds: string[];
-  serviceType: string; // TODO: regular | night
-}
-
-type StationInformationType = {
-  stationId: string;
-  name: string;
-}
-
-type RouteStopPointType = {
-  stations: StationInformationType[];
-  orderedLineRoutes: OrderedLineRouteType[];
-};
-
-type DepartureTimeType = {
-  direction: string;
-  destinationNaptanId: string;
-  destinationName: string;
-  expectedArrival: string;
-  towards: string;
-  timeToStation: number;
-};
 
 // utility fetch wrapper
 
